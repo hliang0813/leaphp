@@ -49,7 +49,7 @@ class Act extends Action {    // 从Action类继承，类名同文件名
 ```
 
 #TODO
-* 还有好多...
+* 函数自动加载
 
 #Copyright and License
 
