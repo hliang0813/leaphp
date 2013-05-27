@@ -44,12 +44,9 @@ class Act extends Action {
 ?>
 ```
 
-TODO
-====
+#TODO
 
-Copyright and License
-====
+#Copyright and License
 
-See Also
-====
+#See Also
 * [LeaPHP Framework Homepage](http://leaphp.net)
