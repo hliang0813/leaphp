@@ -37,7 +37,7 @@ return array(
 ?>
 ```
 
-#### 控制器文件 Act.ctrl.php
+#### 控制器文件 myappname/actions/Act.ctrl.php
 ```php
 <?php
 class Act extends Action {    // 从Action类继承，类名同文件名
