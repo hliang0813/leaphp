@@ -4,8 +4,9 @@
 
 ## Description
 
-由于工作及项目需要，开发本框架。
+基于工作及项目需要，开发本框架。
 
+作为初级PHP框架，只简单实现了控制器部分。模版及数据库抽象部分分别使用了Smarty和ActiveRecoard实现。
 
 ## Requirement
 * PHP 5.4+
