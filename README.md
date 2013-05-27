@@ -2,6 +2,8 @@
 
 一个简单的PHP快速开发框架。
 
+当前版本 v0.4.1Stable 和 v1.0.0Alpha
+
 ## Description
 
 基于工作及项目需要，开发本框架。
