@@ -2,7 +2,7 @@
 
 一个简单的PHP快速开发框架。
 
-#Descripttion
+#Description
 
 由于工作及项目需要，开发本框架。
 
