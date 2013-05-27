@@ -18,3 +18,4 @@
 
 #See Also
 * [LeaPHP Framework 项目主页](http://leaphp.net)
+* [LeaPHP Framework Wiki](https://github.com/hliang0813/leaphp1/wiki)
