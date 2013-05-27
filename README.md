@@ -49,8 +49,9 @@ class Act extends Action {    // 从Action类继承，类名同文件名
 ```
 
 #TODO
+* 还有好多...
 
 #Copyright and License
 
 #See Also
-* [LeaPHP Framework Homepage](http://leaphp.net)
+* [LeaPHP Framework 项目主页](http://leaphp.net)
