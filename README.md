@@ -6,6 +6,11 @@
 
 由于工作及项目需要，开发本框架。
 
+
+#Requirement
+* PHP 5.4+
+* PDO driver for your respective database
+
 #Manual
 ## hello world!
 
