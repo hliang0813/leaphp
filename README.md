@@ -28,7 +28,11 @@ App::run(__DIR__);                        // 开始执行框架程序
 ```php
 <?php
 return array(
-  '/^\/?$/' => 'Act.mytest'   // URL中pathinfo与框架中对象方法的对应
+  // URL中pathinfo与框架中对象方法的对应
+  // 左边值为匹配pathinfo的正则表达式，可以使用()来匹配其中的参数
+  // 右边值为“控制器类名.方法名”
+  '/^\/?$/' => 'Act.mytest',
+  '/^\/(\w+)$/' => 'Act.mytest'
 );
 ?>
 ```
@@ -36,7 +40,7 @@ return array(
 #### 控制器文件 Act.ctrl.php
 ```php
 <?php
-class Act extends Action {    // 从Action类继承
+class Act extends Action {    // 从Action类继承，类名同文件名
   public function mytest() {  // 你的方法
     echo 'Hello world !';     // 主程序内容
   }
