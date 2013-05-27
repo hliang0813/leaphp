@@ -2,7 +2,7 @@
 
 一个简单的PHP快速开发框架。
 
-当前版本 v0.4.1(stable) 和 v1.0.0(alpha)
+当前版本`v1.0.0(alpha)`
 
 ## Description
 
