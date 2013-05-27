@@ -19,7 +19,7 @@
 <?php
 define('APP_NAME', 'myappname');          // 定义应用名称
 define('URLS', __DIR__ . '/my.urls.php'); // 定义URL配置文件位置
-include __DIR__ . '/leaphp/LeaPHP.php';              // 引入框架主文件
+include __DIR__ . '/leaphp/LeaPHP.php';   // 引入框架主文件
 App::run(__DIR__);                        // 开始执行框架程序
 ?>
 ```
