@@ -58,7 +58,75 @@
 <ul>
 <li><a href="http://leaphp.net">LeaPHP Framework 项目主页</a></li>
 <li><a href="https://github.com/hliang0813/leaphp1/wiki">LeaPHP Framework Wiki</a></li>
-</ul>
+</ul><hr><hr><h1>Manual</h1>
+
+<h2>第一个程序 Hello world!</h2>
+
+<h3>文件目录结构</h3>
+
+<div class="highlight"><pre><span class="o">/</span>
+  <span class="o">|-</span> <span class="nx">index</span><span class="o">.</span><span class="nx">php</span>          <span class="c1">// 入口文件</span>
+  <span class="o">|-</span> <span class="nx">my</span><span class="o">.</span><span class="nx">urls</span><span class="o">.</span><span class="nx">php</span>        <span class="c1">// 路径配置文件</span>
+  <span class="o">|-</span> <span class="nx">myappname</span>          <span class="c1">// 应用目录</span>
+    <span class="o">|-</span> <span class="nx">actions</span>
+      <span class="o">|-</span> <span class="nx">Act</span><span class="o">.</span><span class="nx">ctrl</span><span class="o">.</span><span class="nx">php</span>   <span class="c1">// 控制器文件</span>
+</pre></div>
+
+<h3>入口文件</h3>
+
+<p>作为浏览器访问的入口文件，通常我们使用<code>index.php</code>作为入口文件。</p>
+
+<p>在入口文件中定义了应用的基本配置项目，包括应用名称、调试开关、路由配置文件等基本应用配置。</p>
+
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="nb">define</span><span class="p">(</span><span class="s1">'APP_NAME'</span><span class="p">,</span> <span class="s1">'myappname'</span><span class="p">);</span>          <span class="c1">// 定义应用名称</span>
+<span class="nb">define</span><span class="p">(</span><span class="s1">'URLS'</span><span class="p">,</span> <span class="nx">__DIR__</span> <span class="o">.</span> <span class="s1">'/my.urls.php'</span><span class="p">);</span> <span class="c1">// 定义URL配置文件位置</span>
+<span class="k">include</span> <span class="nx">__DIR__</span> <span class="o">.</span> <span class="s1">'/leaphp/LeaPHP.php'</span><span class="p">;</span>   <span class="c1">// 引入框架主文件</span>
+<span class="nx">App</span><span class="o">::</span><span class="na">run</span><span class="p">(</span><span class="nx">__DIR__</span><span class="p">);</span>                        <span class="c1">// 开始执行框架程序</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+
+<h3>路径配置文件</h3>
+
+<p>使用应用入口文件中配置的<code>URLS</code>项指定的文件作为路径的配置文件。</p>
+
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="k">return</span> <span class="k">array</span><span class="p">(</span>
+  <span class="c1">// URL中pathinfo与框架中对象方法的对应</span>
+  <span class="c1">// 左边值为匹配pathinfo的正则表达式，可以使用()来匹配其中的参数</span>
+  <span class="c1">// 右边值为“控制器类名.方法名”</span>
+  <span class="s1">'/^\/?$/'</span> <span class="o">=&gt;</span> <span class="s1">'Act.mytest'</span><span class="p">,</span>
+  <span class="s1">'/^\/(\w+)$/'</span> <span class="o">=&gt;</span> <span class="s1">'Act.mytest'</span>
+<span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+
+<h3>控制器文件</h3>
+
+<p>控制器文件保存在控制器目录下，默认的控制器目录是应用入口文件中配置的<code>APP_NAME</code>目录中的<code>actions</code>目录下。</p>
+
+<p>控制器文件使用<code>控制器类名.ctrl.php</code>作为文件名。</p>
+
+<p>控制器类需要从<code>Action</code>类继承而来。因为在使用控制器类时，框架会自动加载<code>Action</code>类，所以不需要再使用include引入文件。</p>
+
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="k">class</span> <span class="nc">Act</span> <span class="k">extends</span> <span class="nx">Action</span> <span class="p">{</span>    <span class="c1">// 从Action类继承，类名同文件名</span>
+  <span class="k">public</span> <span class="k">function</span> <span class="nf">mytest</span><span class="p">()</span> <span class="p">{</span>  <span class="c1">// 你的方法，声明为public方法</span>
+    <span class="k">echo</span> <span class="s1">'Hello world !'</span><span class="p">;</span>     <span class="c1">// 主程序内容</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+
+<h3>访问您的应用</h3>
+
+<p>默认的情况下，如果您是用Apache作为服务器中间件，可直接通过<code>PATHINFO</code>的方式来访问您的应用。</p>
+
+<p>如果您的服务器中间件是Nginx，由于默认情况下Nginx是不支持<code>PATHINFO</code>的，所以还需要您在Nginx上配置<code>PATHINFO</code>的支持。</p>
+
+<div class="highlight"><pre><span class="nx">http</span><span class="o">://</span><span class="nx">localhost</span><span class="o">/</span><span class="nx">index</span><span class="o">.</span><span class="nx">php</span><span class="o">/</span>
+<span class="nx">http</span><span class="o">://</span><span class="nx">localhost</span><span class="o">/</span><span class="nx">index</span><span class="o">.</span><span class="nx">php</span><span class="o">/</span><span class="nx">test</span>
+</pre></div>
       </section>
       <footer>
         <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
