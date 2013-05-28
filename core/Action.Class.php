@@ -5,10 +5,6 @@ require_once __DIR__ . DS . 'template' . DS . 'Smarty.class.php';
 class Action extends Base {
 	static private $template;
 
-	// public function __construct() {
-
-	// }
-
 	// 由其它模块扩展而来的功能
 	public function __call($method, $params) {
 		switch (explode('_', $method, 2)[0]) {
@@ -37,28 +33,7 @@ class Action extends Base {
 		}
 	}
 
-	// # 模板变量赋值
-	// public function assign($mark, $value) {
-	// 	if ($this->use_template) {
-	// 		$this->template->assign($mark, $value);
-	// 	} else {
-	// 		throw new Exception('Template(s) unactived.', 824200006);
-	// 	}
-	// }
-
-	// # 显示模板
-	// public function display($template_file = null) {
-	// 	if ($this->use_template) {
-	// 		if ($template_file == null) {
-	// 			$template_file = ltrim(self::$controller . '/' . self::$action . ".html", '/');
-	// 		}
-	// 		$this->template->display($template_file);
-	// 	} else {
-	// 		throw new Exception('Template(s) unactived.', 824200006);
-	// 	}
-	// }
-
-	# 页面跳转
+	// 页面跳转
 	static protected function redirect($url = '') {
 		$url = $url == '' ? $_SERVER['HTTP_REFERER'] : $url;
 		echo '<script>window.location="' . $url . '";</script>';

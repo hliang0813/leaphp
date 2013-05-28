@@ -55,7 +55,7 @@ class App extends Base {
 		self::$ctrl_abs_path = self::$app_abs_path . DS . APP_NAME . DS . ACTION_DIR;
 	}
 
-	# 应用开始
+	// 应用开始
 	static public function run($app_path = NULL) {
 		// 初始化框架常量
 		self::initializeConst($app_path);

@@ -9,7 +9,7 @@ class Base {
 		}
 	}
 
-	# 加载数据库配置文件
+	// 加载数据库配置文件
 	static protected function configure($config) {
 		$config_file = realpath(CONFIG_DIR . DS . 'configure.ini');
 		if (file_exists($config_file)) {
