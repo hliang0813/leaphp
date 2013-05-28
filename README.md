@@ -15,7 +15,6 @@
 * 使用到数据库连接时（MySQL、SQLite、PostgreSQL、Oracle），需要PDO支持
 
 ## TODO
-* 函数自动加载
 
 ## Copyright and License
 
