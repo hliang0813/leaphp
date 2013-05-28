@@ -10,6 +10,7 @@ session_start();
 header("Content-type: text/html; charset=utf-8");
 date_default_timezone_set('Asia/Shanghai');
 
+
 // 设置系统分隔符
 define ('DS', DIRECTORY_SEPARATOR);
 // 设置默认DEBUG开关
@@ -24,11 +25,14 @@ defined('ACTION_DIR') or define('ACTION_DIR', 'actions');
 defined('BIZ_DIR') or define('BIZ_DIR', 'business');
 // 设置ORM对象目录
 defined('ORM_DIR') or define('ORM_DIR', 'models');
+// 设置CACHE目录
+defined('CACHE_DIR') or define('CACHE_DIR', 'caches');
 
 // 引入框架文件
 require_once __DIR__ . DS . 'core' . DS . 'Base.Class.php';
 require_once __DIR__ . DS . 'core' . DS . 'App.Class.php';
 require_once __DIR__ . DS . 'core' . DS . 'Action.Class.php';
+require_once __DIR__ . DS . 'core' . DS . '/library/LeapCache.Class.php';
 
 # LeaPHP 统一异常处理
 function LeaphpException($e) {

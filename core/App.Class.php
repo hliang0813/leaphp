@@ -16,15 +16,24 @@ class App extends Base {
 			// 如果没有找到URL配置文件
 			throw new Exception('Could not find router file.', 824200003);
 		} else {
-			$urls = require_once URLS;
 			$pathinfo = isset($_SERVER['ORIG_PATH_INFO']) ? $_SERVER['ORIG_PATH_INFO'] : $_SERVER['PATH_INFO'];
-			// 开始匹配URL地址
-			foreach ((array)$urls as $pattern => $handler) {
-				preg_match($pattern, $pathinfo, self::$params);
-				if (!empty(self::$params)) {
-					list(self::$name_ctrl, self::$name_action) = explode('.', $handler);
-					unset(self::$params[0]);
-					break;
+			if ($cache_data = LeapCache::get('urls', md5($pathinfo))) {
+				// 如果缓存了url转发路径
+				list(self::$name_ctrl, self::$name_action, self::$params) = json_decode($cache_data, true);
+			} else {
+				// 没缓存url转发路径
+				$urls = require_once URLS;
+				// 开始匹配URL地址
+				foreach ((array)$urls as $pattern => $handler) {
+					preg_match($pattern, $pathinfo, self::$params);
+					if (!empty(self::$params)) {
+						list(self::$name_ctrl, self::$name_action) = explode('.', $handler);
+						unset(self::$params[0]);
+						// 缓存url路径转发
+						$cache_data = array(self::$name_ctrl, self::$name_action, self::$params);
+						LeapCache::set('urls', md5($pathinfo), json_encode($cache_data));
+						break;
+					}
 				}
 			}
 		}
