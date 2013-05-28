@@ -24,7 +24,6 @@
 * [LeaPHP Framework Wiki](https://github.com/hliang0813/leaphp1/wiki)
 
 ***
-***
 
 # Manual
 
