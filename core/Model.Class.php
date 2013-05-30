@@ -52,9 +52,9 @@ class Model extends Base {
 	static public function init($config) {
 		$config = Base::configure('Model_' . $config);
 		if ($config['db_pass'] == '') {
-			$connect_string = sprintf('%s://%s@%s:%s/%s', $config['db_driver'], $config['db_user'], $config['db_server'], $config['db_port'], $config['db_name']);
+			$connect_string = sprintf('%s://%s@%s:%s/%s;charset=%s', $config['db_driver'], $config['db_user'], $config['db_server'], $config['db_port'], $config['db_name'], $config['db_charset']);
 		} else {
-			$connect_string = sprintf('%s://%s:%s@%s:%s/%s', $config['db_driver'], $config['db_user'], $config['db_pass'], $config['db_server'], $config['db_port'], $config['db_name']);
+			$connect_string = sprintf('%s://%s:%s@%s:%s/%s;charset=%s', $config['db_driver'], $config['db_user'], $config['db_pass'], $config['db_server'], $config['db_port'], $config['db_name'], $config['db_charset']);
 		}
 
 		$connections = array(

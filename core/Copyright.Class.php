@@ -13,7 +13,7 @@ class Copyright extends Base {
 	 *
 	 */
 	static function frameworkVersion() {
-		return "Version " . self::$framework_version;
+		return "Version " . LEAPHP_VERSION_ID;
 	}
 
 	/**

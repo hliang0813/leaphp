@@ -13,6 +13,11 @@ date_default_timezone_set('Asia/Shanghai');
 
 // 设置系统分隔符
 define ('DS', DIRECTORY_SEPARATOR);
+// 设置框架本身的绝对路径
+define('LEAP_ABS_PATH', __DIR__);
+
+// 设置框架系统插件目录
+defined('SYSPLUGIN_DIR') or define('SYSPLUGIN_DIR', __DIR__ . '/sysplugins');
 // 设置默认DEBUG开关
 defined('DEBUG') or define('DEBUG', false);
 // 设置应用APP名称
@@ -85,7 +90,7 @@ function LeapFunction() {
 		default:
 			$function_name = 'leap_function_' . $params[0];
 			if (!function_exists($function_name)) {
-				$function_file = LEAP_DIR . DS . FUNCTIONS_DIR . DS . 'function.' . $params[0] . '.php';
+				$function_file = __DIR__ . DS . 'functions' . DS . 'function.' . $params[0] . '.php';
 				if (file_exists($function_file)) {
 					require_once $function_file;
 				} else {

@@ -28,7 +28,9 @@ class LeapCache extends Base {
 		}
 		// 将新key增加到缓存内
 		$cache[$key] = array(
+			// 缓存内容
 			'data' => $value, 
+			// 超时时间
 			'expire' => $expire == 0 ? 0 : time() + $expire
 		);
 		// 生成缓存内容

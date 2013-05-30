@@ -48,7 +48,7 @@ class App extends Base {
 	}
 	
 	// 初始化框架常量
-	static public function initializeConst($app_path) {
+	static private function initializeConst($app_path) {
 		$script_name = pathinfo($_SERVER['SCRIPT_NAME']);
 		// 应用的访问URI
 		define('ENTRY_URI', $_SERVER['SCRIPT_NAME']);
@@ -64,10 +64,22 @@ class App extends Base {
 		self::$ctrl_abs_path = self::$app_abs_path . DS . APP_NAME . DS . ACTION_DIR;
 	}
 
+	// 初始化配置文件
+	static private function initializeConfig() {
+		$config_file = CONFIG_DIR . DS . 'configure.ini';
+		if (file_exists($config_file)) {
+			$_SERVER['LEAPHP_CONFIGURE'] = parse_ini_file($config_file, true);
+		} else {
+			throw new Exception("Error on loading database configuration file.", 824209001);
+		}
+	}
+
 	// 应用开始
 	static public function run($app_path = NULL) {
 		// 初始化框架常量
 		self::initializeConst($app_path);
+		// 初始化配置文件
+		self::initializeConfig();
 		// 解析URL地址
 		self::handleFunc();
 
