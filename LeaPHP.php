@@ -5,8 +5,8 @@ if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50400) {
 define('LEAPHP_VERSION_ID', '1.0.0');
 define('LEAPHP_VERSION_RELEASE', 'alpha');
 
-error_reporting(7);
-session_start();
+error_reporting(0);
+#session_start();
 header("Content-type: text/html; charset=utf-8");
 date_default_timezone_set('Asia/Shanghai');
 
@@ -15,6 +15,8 @@ date_default_timezone_set('Asia/Shanghai');
 define ('DS', DIRECTORY_SEPARATOR);
 // 设置框架本身的绝对路径
 define('LEAP_ABS_PATH', __DIR__);
+// 设置应用的绝对路径
+define('APP_ABS_PATH', dirname(filter_input(INPUT_SERVER, 'SCRIPT_FILENAME')));
 
 // 设置框架系统插件目录
 defined('SYSPLUGIN_DIR') or define('SYSPLUGIN_DIR', __DIR__ . '/sysplugins');
@@ -33,11 +35,19 @@ defined('ORM_DIR') or define('ORM_DIR', 'models');
 // 设置CACHE目录
 defined('CACHE_DIR') or define('CACHE_DIR', 'caches');
 
+// 加载配置文件
+$config_file = APP_ABS_PATH . DS . CONFIG_DIR . DS . 'config.ini.php';
+if (file_exists($config_file)) {
+	require_once $config_file;
+}
+
 // 引入框架文件
 require_once __DIR__ . DS . 'core' . DS . 'Base.Class.php';
+require_once __DIR__ . DS . 'core' . DS . 'Copyright.Class.php';
 require_once __DIR__ . DS . 'core' . DS . 'App.Class.php';
 require_once __DIR__ . DS . 'core' . DS . 'Action.Class.php';
-require_once __DIR__ . DS . 'core' . DS . '/library/LeapCache.Class.php';
+require_once __DIR__ . DS . 'core' . DS . 'library' . DS . 'Params.Function.php';
+require_once __DIR__ . DS . 'core' . DS . 'library' . DS . 'LeapCache.Class.php';
 
 # LeaPHP 统一异常处理
 function LeaphpException($e) {
@@ -53,23 +63,21 @@ set_exception_handler('LeaphpException');
 
 # 自动装载类库
 function LeapClassAutoload($class_name) {
-	$loaded = false;
 	# 根据leaphp的目录结构设置自动装载的位置
-	$cmap = array(
-		'Model' => '',
-		'DataBase' => 'db' . DS,
-		'Db' => 'db' . DS,
-		'MasterSlave' => 'db' . DS,
-		'PageNav' => 'library' . DS,
+	$c_map = array(
+		'Model'			=> '',
+		'DataBase'		=> 'db' . DS,
+		'Db'			=> 'db' . DS,
+		'MasterSlave'	=> 'db' . DS,
+		'PageNav'		=> 'library' . DS,
 	);
-	if (array_key_exists($class_name, $cmap)) {
-		$class_file = __DIR__ . DS . 'core' . DS . $cmap[$class_name] . $class_name . '.Class.php';
+	if (array_key_exists($class_name, $c_map)) {
+		$class_file = __DIR__ . DS . 'core' . DS . $c_map[$class_name] . $class_name . '.Class.php';
 	} else {
-		$class_file = __DIR__ . DS . 'classes' . DS . $class_name . '.Class.php';
+		$class_file = __DIR__ . DS . 'sysplugins' . DS . $class_name . DS . 'init.plugin.php';
 	}
 	if (file_exists($class_file)) {
 		require_once $class_file;
-		$loaded = true;
 	}
 }
 spl_autoload_register('LeapClassAutoload');

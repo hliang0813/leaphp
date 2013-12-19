@@ -36,19 +36,18 @@ class Upload extends Base {
 	// 上传文件动作
 	static public function send($field_name, $sub_folder = '', $rename = '') {
 		// 初始化配置项目
-		self::$upload_configure = $_SERVER['LEAPHP_CONFIGURE'][self::$config_key];
-		if (!self::$upload_configure) {
-			die('没有找到上传的配置文件');
+		if (!array_key_exists('server_path', (array)$GLOBALS['config'][self::$config_key]) || !array_key_exists('uri_path', (array)$GLOBALS['config'][self::$config_key])) {
+			die('使用上传文件模块，需要在配置文件中对其做相应的配置。');
 		}
 		// 初始化文件域名称
 		self::$upload_field_name = $field_name;
 		// 初始化上传文件属性
-		self::$upload_file = $_FILES[self::$upload_field_name];
+		self::$upload_file = _files(self::$upload_field_name);
 		// 初始化上传目标文件名称及路径
 		$dest_file_name = ($rename ? urlencode($rename) : time()) . '.' . pathinfo(self::$upload_file['name'])['extension'];
-		self::$dest_file_path = APP_ABS_PATH . self::$upload_configure['upload_path'] . $sub_folder . DS . $dest_file_name;
+		self::$dest_file_path = APP_ABS_PATH . $GLOBALS['config'][self::$config_key]['server_path'] . $sub_folder . DS . $dest_file_name;
 		// 初始化上传目标文件访问URI
-		self::$dest_file_uri = PATH .  self::$upload_configure['upload_uri'] . $sub_folder . '/' . $dest_file_name;
+		self::$dest_file_uri = PATH . $GLOBALS['config'][self::$config_key]['uri_path'] . $sub_folder . '/' . $dest_file_name;
 		// 初始化上传目标文件属性
 		self::$dest_file = pathinfo(self::$dest_file_uri);
 

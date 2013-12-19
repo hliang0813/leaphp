@@ -21,7 +21,7 @@ class Copyright extends Base {
 	 *
 	 */
 	static function frameworkCopyright() {
-		$copyright .= "Powered by hliang@Neusoft-DMED Email:<a href='mailto:huang.liang@neusoft.com' target='_blank'>huang.liang#Neusoft.com</a>";
+		$copyright .= "Powered by LeaPHP 2011-" . date('Y') . "@Neusoft-DMED <br />Email:<a href='mailto:huang.liang@neusoft.com' target='_blank'>huang.liang#Neusoft.com</a>";
 		return $copyright;
 	}
 
