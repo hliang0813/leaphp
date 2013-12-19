@@ -93,8 +93,7 @@ function LeapFunction() {
 	$params = func_get_args();
 	switch (func_num_args()) {
 		case 0:
-		throw new Exception('Parameter(s) error while using autoload function(s).', 824209015);
-			break;
+			throw new Exception('Parameter(s) error while using autoload function(s).', 824209015);
 		default:
 			$function_name = 'leap_function_' . $params[0];
 			if (!function_exists($function_name)) {
@@ -107,7 +106,6 @@ function LeapFunction() {
 			}
 			unset($params[0]);
 			return call_user_func_array($function_name, $params);
-			break;
 	}
 }
 
