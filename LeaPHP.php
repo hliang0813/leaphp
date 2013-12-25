@@ -41,6 +41,7 @@ if (file_exists($config_file)) {
 }
 
 // 引入框架文件
+require_once leapJoin(__DIR__, DS, 'core', DS, 'Plugin.Function.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'Base.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'Copyright.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'App.Class.php');
@@ -61,7 +62,7 @@ set_exception_handler('LeaphpException');
 
 
 # 自动装载类库
-function LeapClassAutoload($class_name) {
+function leapAutoload($class_name) {
 	# 根据leaphp的目录结构设置自动装载的位置
 	$c_map = array(
 		'Model'			=> '',
@@ -79,7 +80,7 @@ function LeapClassAutoload($class_name) {
 		require_once $class_file;
 	}
 }
-spl_autoload_register('LeapClassAutoload');
+spl_autoload_register('leapAutoload');
 
 function visit_limit() {
 	// if (!defined('LEAP_START')) {
@@ -111,18 +112,5 @@ function LeapFunction() {
 			return call_user_func_array($function_name, $params);
 	}
 }
-
-//# 注册HOOK函数
-//function LeapHook_register($hookname, $callback) {
-//	$GLOBALS['_LEAP_HOOK'][$hookname][] = $callback;
-//}
-//
-//# 调用HOOK函数
-//function LeapHook_add($hookname, $data) {
-//	foreach ((array)$GLOBALS['_LEAP_HOOK'][$hookname] as $hook) {
-//		return $hook($data);
-//	}
-//	return $data;
-//}
 
 
