@@ -6,7 +6,6 @@ define('LEAPHP_VERSION_ID', '1.0.0');
 define('LEAPHP_VERSION_RELEASE', 'alpha');
 
 error_reporting(0);
-#session_start();
 header("Content-type: text/html; charset=utf-8");
 date_default_timezone_set('Asia/Shanghai');
 
@@ -19,7 +18,7 @@ define('LEAP_ABS_PATH', __DIR__);
 define('APP_ABS_PATH', dirname(filter_input(INPUT_SERVER, 'SCRIPT_FILENAME')));
 
 // 设置框架系统插件目录
-defined('SYSPLUGIN_DIR') or define('SYSPLUGIN_DIR', __DIR__ . '/sysplugins');
+defined('SYSPLUGIN_DIR') or define('SYSPLUGIN_DIR', leapJoin(__DIR__, DS, 'sysplugins'));
 // 设置默认DEBUG开关
 defined('DEBUG') or define('DEBUG', false);
 // 设置应用APP名称
@@ -36,18 +35,18 @@ defined('ORM_DIR') or define('ORM_DIR', 'models');
 defined('CACHE_DIR') or define('CACHE_DIR', 'caches');
 
 // 加载配置文件
-$config_file = APP_ABS_PATH . DS . CONFIG_DIR . DS . 'config.ini.php';
+$config_file = leapJoin(APP_ABS_PATH, DS, CONFIG_DIR, DS, 'config.ini.php');
 if (file_exists($config_file)) {
 	require_once $config_file;
 }
 
 // 引入框架文件
-require_once __DIR__ . DS . 'core' . DS . 'Base.Class.php';
-require_once __DIR__ . DS . 'core' . DS . 'Copyright.Class.php';
-require_once __DIR__ . DS . 'core' . DS . 'App.Class.php';
-require_once __DIR__ . DS . 'core' . DS . 'Action.Class.php';
-require_once __DIR__ . DS . 'core' . DS . 'library' . DS . 'Params.Function.php';
-require_once __DIR__ . DS . 'core' . DS . 'library' . DS . 'LeapCache.Class.php';
+require_once leapJoin(__DIR__, DS, 'core', DS, 'Base.Class.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'Copyright.Class.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'App.Class.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'Action.Class.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'library', DS, 'Params.Function.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'library', DS, 'LeapCache.Class.php');
 
 # LeaPHP 统一异常处理
 function LeaphpException($e) {
@@ -66,15 +65,15 @@ function LeapClassAutoload($class_name) {
 	# 根据leaphp的目录结构设置自动装载的位置
 	$c_map = array(
 		'Model'			=> '',
-		'DataBase'		=> 'db' . DS,
-		'Db'			=> 'db' . DS,
-		'MasterSlave'	=> 'db' . DS,
-		'PageNav'		=> 'library' . DS,
+		'DataBase'		=> leapJoin('db', DS),
+		'Db'			=> leapJoin('db', DS),
+		'MasterSlave'	=> leapJoin('db', DS),
+		'PageNav'		=> leapJoin('library', DS),
 	);
 	if (array_key_exists($class_name, $c_map)) {
-		$class_file = __DIR__ . DS . 'core' . DS . $c_map[$class_name] . $class_name . '.Class.php';
+		$class_file = leapJoin(__DIR__, DS, 'core', DS, $c_map[$class_name], $class_name, '.Class.php');
 	} else {
-		$class_file = __DIR__ . DS . 'sysplugins' . DS . $class_name . DS . 'init.plugin.php';
+		$class_file = leapJoin(__DIR__, DS, 'sysplugins', DS, $class_name, DS, 'init.plugin.php');
 	}
 	if (file_exists($class_file)) {
 		require_once $class_file;
@@ -88,6 +87,10 @@ function visit_limit() {
 	// }
 }
 
+function leapJoin() {
+	return join(func_get_args());
+}
+
 # 自动装载函数库
 function LeapFunction() {
 	$params = func_get_args();
@@ -95,9 +98,9 @@ function LeapFunction() {
 		case 0:
 			throw new Exception('Parameter(s) error while using autoload function(s).', 824209015);
 		default:
-			$function_name = 'leap_function_' . $params[0];
+			$function_name = leapJoin('leap_function_', $params[0]);
 			if (!function_exists($function_name)) {
-				$function_file = __DIR__ . DS . 'functions' . DS . 'function.' . $params[0] . '.php';
+				$function_file = leapJoin(__DIR__, DS, 'functions', DS, 'function.', $params[0], '.php');
 				if (file_exists($function_file)) {
 					require_once $function_file;
 				} else {
@@ -109,16 +112,17 @@ function LeapFunction() {
 	}
 }
 
-# 注册HOOK函数
-function LeapHook_register($hookname, $callback) {
-	$GLOBALS['_LEAP_HOOK'][$hookname][] = $callback;
-}
+//# 注册HOOK函数
+//function LeapHook_register($hookname, $callback) {
+//	$GLOBALS['_LEAP_HOOK'][$hookname][] = $callback;
+//}
+//
+//# 调用HOOK函数
+//function LeapHook_add($hookname, $data) {
+//	foreach ((array)$GLOBALS['_LEAP_HOOK'][$hookname] as $hook) {
+//		return $hook($data);
+//	}
+//	return $data;
+//}
 
-# 调用HOOK函数
-function LeapHook_add($hookname, $data) {
-	foreach ((array)$GLOBALS['_LEAP_HOOK'][$hookname] as $hook) {
-		return $hook($data);
-	}
-	return $data;
-}
 

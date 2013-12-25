@@ -2,28 +2,28 @@
 class Action extends Base {
 	static private $template;
 
-	// ç”±å…¶å®ƒæ¨¡å—æ‰©å±•è€Œæ¥çš„åŠŸèƒ½
+	// ÓÉÆäËüÄ£¿éÀ©Õ¹¶øÀ´µÄ¹¦ÄÜ
 	public function __call($method, $params) {
 		switch (explode('_', $method, 2)[0]) {
 			case 'tpl':
-				// ä½¿ç”¨æ¨¡æ¿ç±»ä¸­çš„æ–¹æ³•
+				// Ê¹ÓÃÄ£°åÀàÖĞµÄ·½·¨
 				$tpl_method = substr($method, 4);
 				if (!is_object(self::$template)) {
-					// å¼•å…¥SMARTYæ¨¡æ¿å­æ¡†æ¶
-					require_once __DIR__ . DS . 'template' . DS . 'Smarty.class.php';
-					// åˆå§‹åŒ–SMARTYæ¨¡æ¿
+					// ÒıÈëSMARTYÄ£°å×Ó¿ò¼Ü
+					require_once leapJoin(__DIR__, DS, 'template', DS, 'Smarty.class.php');
+					// ³õÊ¼»¯SMARTYÄ£°å
 					self::$template = new Smarty;
-					// æ¨¡æ¿æ–‡ä»¶å¤¹
-					self::$template->setTemplateDir(APP_ABS_PATH . DS . APP_NAME . DS . 'templates');
-					// æ¨¡æ¿ç¼–è¯‘æ–‡ä»¶å¤¹
-					self::$template->setCompileDir(APP_ABS_PATH . DS . APP_NAME . DS . 'templates_c');
-					// æ¨¡æ¿CACHEæ–‡ä»¶å¤¹
-					self::$template->setCacheDir(APP_ABS_PATH . DS . APP_NAME . DS . 'caches');
-					// æ¨¡æ¿å·¦å³è¾¹ç•Œ
+					// Ä£°åÎÄ¼ş¼Ğ
+					self::$template->setTemplateDir(leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, 'templates'));
+					// Ä£°å±àÒëÎÄ¼ş¼Ğ
+					self::$template->setCompileDir(leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, 'templates_c'));
+					// Ä£°åCACHEÎÄ¼ş¼Ğ
+					self::$template->setCacheDir(leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, 'caches'));
+					// Ä£°å×óÓÒ±ß½ç
 					self::$template->setLeftDelimiter("<{");
 					self::$template->setRightDelimiter("}>");
 				}
-				// è°ƒç”¨æ¨¡æ¿æ–¹æ³•
+				// µ÷ÓÃÄ£°å·½·¨
 				call_user_func_array(array(self::$template, $tpl_method), $params);
 				break;
 			default:
@@ -32,10 +32,10 @@ class Action extends Base {
 		}
 	}
 
-	// é¡µé¢è·³è½¬
+	// Ò³ÃæÌø×ª
 	static protected function redirect($url = '') {
-		$url = $url == '' ? $_SERVER['HTTP_REFERER'] : $url;
-		echo '<script>window.location="' . $url . '";</script>';
+		$url = $url == '' ? filter_input(INPUT_SERVER, 'HTTP_REFERER') : $url;
+		header(leapJoin('Location: ', $url));
 		exit;
 	}
 }

@@ -8,12 +8,9 @@ class App extends Base {
 	
 	// 解析URL地址
 	static private function parseURLS() {
-		if (!file_exists(URLS)) {
-			// 如果没有找到URL配置文件
-			throw new Exception('Could not find router file.', 824200003);
-		} else {
+		if (file_exists(URLS)) {
 			LeapCache::setPrefix('URLS');
-			$pathinfo = isset($_SERVER['ORIG_PATH_INFO']) ? $_SERVER['ORIG_PATH_INFO'] : $_SERVER['PATH_INFO'];
+			$pathinfo = filter_input(INPUT_SERVER, 'PATH_INFO');
 			if ($cache_data = LeapCache::get(md5($pathinfo))) {
 				// 如果缓存了url转发路径
 				list(self::$ctrl_name, self::$action_name, self::$params) = json_decode($cache_data, true);
@@ -33,6 +30,9 @@ class App extends Base {
 					}
 				}
 			}
+		} else {
+			// 如果没有找到URL配置文件
+			throw new Exception('Could not find router file.', 824200003);
 		}
 
 		if (!isset(self::$ctrl_name) || !isset(self::$action_name)) {
@@ -40,16 +40,16 @@ class App extends Base {
 		}
 
 		// 引入控制器类文件
-		$ctrl_file = APP_ABS_PATH . DS . APP_NAME . DS . ACTION_DIR . DS . self::$ctrl_name . '.ctrl.php';
+		$ctrl_file = leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, ACTION_DIR, DS, self::$ctrl_name, '.ctrl.php');
 		require_once $ctrl_file;
 	}
 	
 	// 初始化框架
 	static private function initialize() {
 		// 应用的访问URI
-		define('ENTRY_URI', $_SERVER['SCRIPT_NAME']);
+		define('ENTRY_URI', filter_input(INPUT_SERVER, 'SCRIPT_NAME'));
 		// 应用的入口文件名
-		define('ENTRY_FILE', pathinfo($_SERVER['SCRIPT_NAME'])['basename']);
+		define('ENTRY_FILE', pathinfo(ENTRY_URI)['basename']);
 		// 应用的访问URI目录
 		define('PATH', dirname(ENTRY_URI));
 	}
