@@ -1,6 +1,4 @@
 <?php
-visit_limit();
-
 function leap_function_getip() {
 	static $realip;
 	if (isset($_SERVER)){

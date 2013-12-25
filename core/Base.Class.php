@@ -1,7 +1,7 @@
 <?php
 class Base {
 	// 检查一字符串是否以另一字符串开头
-	static protected function startWith($str, $match) {
+	static public function startWith($str, $match) {
 		if (substr($str, 0, strlen($match)) == $match) {
 			return true;
 		} else {

@@ -9,21 +9,25 @@ class App extends Base {
 	// 解析URL地址
 	static private function parseURLS() {
 		if (file_exists(URLS)) {
-			LeapCache::setPrefix('URLS');
 			$pathinfo = filter_input(INPUT_SERVER, 'PATH_INFO');
-			if ($cache_data = LeapCache::get(md5($pathinfo))) {
-				// 如果缓存了url转发路径
+			// 指定cache的存储空间为URLS
+			LeapCache::setPrefix(leapJoin('URLS_', md5(APP_ABS_PATH)));
+			// 尝试从cache中读取路径配置
+			$cache_data = LeapCache::get(md5($pathinfo));
+			if ($cache_data) {
+				// 如果缓存了URL转发路径
 				list(self::$ctrl_name, self::$action_name, self::$params) = json_decode($cache_data, true);
 			} else {
-				// 没缓存url转发路径
+				// 没缓存URL转发路径，加载路径配置文件
 				$urls = require_once URLS;
 				// 开始匹配URL地址
 				foreach ((array)$urls as $pattern => $handler) {
 					preg_match($pattern, $pathinfo, self::$params);
+					// 匹配到合适的路径配置
 					if (!empty(self::$params)) {
 						list(self::$ctrl_name, self::$action_name) = explode('.', $handler);
 						unset(self::$params[0]);
-						// 缓存url路径转发
+						// 缓存URL路径转发
 						$cache_data = array(self::$ctrl_name, self::$action_name, self::$params);
 						LeapCache::set(md5($pathinfo), json_encode($cache_data));
 						break;
@@ -44,7 +48,7 @@ class App extends Base {
 		require_once $ctrl_file;
 	}
 	
-	// 初始化框架
+	// 初始化使用框架的应用常量
 	static private function initialize() {
 		// 应用的访问URI
 		define('ENTRY_URI', filter_input(INPUT_SERVER, 'SCRIPT_NAME'));
@@ -56,7 +60,7 @@ class App extends Base {
 
 	// 应用开始，框架入口
 	static public function run() {
-		// 初始化框架
+		// 初始化应用常量
 		self::initialize();
 		// 解析URL地址
 		self::parseURLS();

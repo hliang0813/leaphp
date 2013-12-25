@@ -2,28 +2,19 @@
 class Action extends Base {
 	static private $template;
 
-	// ÓÉÆäËüÄ£¿éÀ©Õ¹¶øÀ´µÄ¹¦ÄÜ
+	// é­”æœ¯æ–¹æ³•
 	public function __call($method, $params) {
 		switch (explode('_', $method, 2)[0]) {
 			case 'tpl':
-				// Ê¹ÓÃÄ£°åÀàÖĞµÄ·½·¨
+				// æ ¹æ®å‰ç¼€æ¥åˆ¤æ–­è°ƒç”¨ä½•ç§æ–¹æ³•
 				$tpl_method = substr($method, 4);
 				if (!is_object(self::$template)) {
-					// ÒıÈëSMARTYÄ£°å×Ó¿ò¼Ü
-					require_once leapJoin(__DIR__, DS, 'template', DS, 'Smarty.class.php');
-					// ³õÊ¼»¯SMARTYÄ£°å
-					self::$template = new Smarty;
-					// Ä£°åÎÄ¼ş¼Ğ
-					self::$template->setTemplateDir(leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, 'templates'));
-					// Ä£°å±àÒëÎÄ¼ş¼Ğ
-					self::$template->setCompileDir(leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, 'templates_c'));
-					// Ä£°åCACHEÎÄ¼ş¼Ğ
-					self::$template->setCacheDir(leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, 'caches'));
-					// Ä£°å×óÓÒ±ß½ç
-					self::$template->setLeftDelimiter("<{");
-					self::$template->setRightDelimiter("}>");
+					// å¼•å…¥æ¨¡æ¿ç±»
+					require_once leapJoin(__DIR__, DS, 'libraries', DS, 'template', DS, 'LeapTemplate.Class.php');
+					// åˆå§‹åŒ–æ¨¡æ¿å¯¹è±¡
+					self::$template = new LeapTemplate;
 				}
-				// µ÷ÓÃÄ£°å·½·¨
+				// åŠ¨æ€è°ƒç”¨æ–¹æ³•
 				call_user_func_array(array(self::$template, $tpl_method), $params);
 				break;
 			default:
@@ -32,7 +23,7 @@ class Action extends Base {
 		}
 	}
 
-	// Ò³ÃæÌø×ª
+	// é¡µé¢è·³è½¬
 	static protected function redirect($url = '') {
 		$url = $url == '' ? filter_input(INPUT_SERVER, 'HTTP_REFERER') : $url;
 		header(leapJoin('Location: ', $url));

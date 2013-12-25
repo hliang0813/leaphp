@@ -1,6 +1,4 @@
 <?php
-visit_limit();
-
 # 复制目录及目录下全部内容
 function leap_function_copydirs($sourceDir,$aimDir){
 	$succeed = true;

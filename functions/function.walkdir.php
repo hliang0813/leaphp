@@ -1,6 +1,4 @@
 <?php
-visit_limit();
-
 define('LEAP_WALKDIR_ALL', 0);
 define('LEAP_WALKDIR_FOLDER', 1);
 define('LEAP_WALKDIR_FILE', 2);

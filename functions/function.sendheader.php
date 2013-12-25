@@ -1,6 +1,4 @@
 <?php
-visit_limit();
-
 function leap_function_sendheader($code) {
 	switch($code) {
 		case '404':

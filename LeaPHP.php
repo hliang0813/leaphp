@@ -1,11 +1,14 @@
 <?php
+// 限制PHP版本号
 if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50400) {
-	die('LeaPHP requires PHP 5.4 or higher');
+	die('LeaPHP requires PHP 5.4.0 or higher');
 }
+// 框架版本号
 define('LEAPHP_VERSION_ID', '1.0.0');
 define('LEAPHP_VERSION_RELEASE', 'alpha');
 
-error_reporting(0);
+// 指定必要的HEADER内容	
+error_reporting(7);
 header("Content-type: text/html; charset=utf-8");
 date_default_timezone_set('Asia/Shanghai');
 
@@ -34,65 +37,77 @@ defined('ORM_DIR') or define('ORM_DIR', 'models');
 // 设置CACHE目录
 defined('CACHE_DIR') or define('CACHE_DIR', 'caches');
 
-// 加载配置文件
-$config_file = leapJoin(APP_ABS_PATH, DS, CONFIG_DIR, DS, 'config.ini.php');
-if (file_exists($config_file)) {
-	require_once $config_file;
-}
-
 // 引入框架文件
-require_once leapJoin(__DIR__, DS, 'core', DS, 'Plugin.Function.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'Plugins.Function.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'Params.Function.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'Base.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'Copyright.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'App.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'Action.Class.php');
-require_once leapJoin(__DIR__, DS, 'core', DS, 'library', DS, 'Params.Function.php');
-require_once leapJoin(__DIR__, DS, 'core', DS, 'library', DS, 'LeapCache.Class.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'LeapCache.Class.php');
 
-# LeaPHP 统一异常处理
-function LeaphpException($e) {
+// LeaPHP 统一异常处理
+function leapException($e) {
 	$error = sprintf('[ERROR #%d] %s', $e->getCode(), $e->getMessage());
 	echo $error;
 	if (DEBUG) {
-		echo '<div style="font-size:13px;"><pre>', $e->getTraceAsString(), '</div>';
+		echo leapJoin('<div style="font-size:13px;"><pre>', $e->getTraceAsString(), '</div>');
 	}
 	exit();
 }
-set_exception_handler('LeaphpException');
+set_exception_handler('leapException');
 
 
-# 自动装载类库
+// 自动装载类库
 function leapAutoload($class_name) {
-	# 根据leaphp的目录结构设置自动装载的位置
-	$c_map = array(
-		'Model'			=> '',
-		'DataBase'		=> leapJoin('db', DS),
-		'Db'			=> leapJoin('db', DS),
-		'MasterSlave'	=> leapJoin('db', DS),
-		'PageNav'		=> leapJoin('library', DS),
-	);
-	if (array_key_exists($class_name, $c_map)) {
-		$class_file = leapJoin(__DIR__, DS, 'core', DS, $c_map[$class_name], $class_name, '.Class.php');
+	$library_file = leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, $class_name, '.Class.php');
+	if (file_exists($library_file)) {
+		require_once $library_file;
 	} else {
-		$class_file = leapJoin(__DIR__, DS, 'sysplugins', DS, $class_name, DS, 'init.plugin.php');
+		$sysplugin_file = leapJoin(__DIR__, DS, 'sysplugins', DS, $class_name, DS, 'init.plugin.php');
+		if (file_exists($sysplugin_file)) {
+			require_once $sysplugin_file;
+		}
 	}
-	if (file_exists($class_file)) {
-		require_once $class_file;
-	}
+	
+	
+	// 根据leaphp的目录结构设置自动装载的位置
+// 	$c_map = array(
+// 		'Model'			=> '',
+// 		'DataBase'		=> leapJoin('db', DS),
+// 		'Db'			=> leapJoin('db', DS),
+// 		'MasterSlave'	=> leapJoin('db', DS),
+// 		'PageNav'		=> leapJoin('libraries', DS),
+// 	);
+// 	if (array_key_exists($class_name, $c_map)) {
+// 		$class_file = leapJoin(__DIR__, DS, 'core', DS, $c_map[$class_name], $class_name, '.Class.php');
+// 	} else {
+// 		$class_file = leapJoin(__DIR__, DS, 'sysplugins', DS, $class_name, DS, 'init.plugin.php');
+// 	}
+// 	if (file_exists($class_file)) {
+// 		require_once $class_file;
+// 	}
 }
 spl_autoload_register('leapAutoload');
 
-function visit_limit() {
-	// if (!defined('LEAP_START')) {
-	// 	LeapFunction('sendheader', 404);
-	// }
+// 加载配置文件
+if (file_exists($config_file = leapJoin(APP_ABS_PATH, DS, CONFIG_DIR, DS, 'config.ini.php'))) {
+	require_once $config_file;
+	LeapConfigure::set($config);
 }
 
+
+// 文件的安全限制，不允许框架文件单独使用
+function leapLimit() {
+	return true;
+}
+
+// 连接字符串，效率高于使用.来连接
 function leapJoin() {
 	return join(func_get_args());
 }
 
-# 自动装载函数库
+// 自动装载函数库
 function LeapFunction() {
 	$params = func_get_args();
 	switch (func_num_args()) {
@@ -112,5 +127,3 @@ function LeapFunction() {
 			return call_user_func_array($function_name, $params);
 	}
 }
-
-
