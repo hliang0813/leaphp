@@ -11,9 +11,9 @@ class App extends Base {
 		if (file_exists(URLS)) {
 			$pathinfo = filter_input(INPUT_SERVER, 'PATH_INFO');
 			// 指定cache的存储空间为URLS
-			LeapCache::setPrefix(leapJoin('URLS_', md5(APP_ABS_PATH)));
+			LeapCache::setPrefix(leapJoin('URLS_', APP_ABS_PATH));
 			// 尝试从cache中读取路径配置
-			$cache_data = LeapCache::get(md5($pathinfo));
+			$cache_data = LeapCache::get($pathinfo);
 			if ($cache_data) {
 				// 如果缓存了URL转发路径
 				list(self::$ctrl_name, self::$action_name, self::$params) = json_decode($cache_data, true);
@@ -29,7 +29,7 @@ class App extends Base {
 						unset(self::$params[0]);
 						// 缓存URL路径转发
 						$cache_data = array(self::$ctrl_name, self::$action_name, self::$params);
-						LeapCache::set(md5($pathinfo), json_encode($cache_data));
+						LeapCache::set($pathinfo, json_encode($cache_data));
 						break;
 					}
 				}

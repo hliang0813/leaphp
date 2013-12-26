@@ -1,56 +1,62 @@
 <?php
-class LeapCache extends Base {
-	static private $cache_file = '';
-	static private $cache_content_prev = '<?php return ';
+///////////////////////////////////////////////////////////////
+// 定义一个CACHE的接口
+///////////////////////////////////////////////////////////////
+interface CacheInterface {
+	// 设置缓存key的前缀
+	static public function setPrefix($prefix);
+	// 设置缓存内容
+	static public function set($key, $value, $ttl);
+	// 读取缓存内容
+	static public function get($key);
+	// 删除缓存内容
+	static public function delete($key);
+}
 
-	static private function loadCacheFile() {
-		if (file_exists(self::$cache_file)) {
-			$cache = include self::$cache_file;
-			return $cache;
-		}
+
+///////////////////////////////////////////////////////////////
+// 使用APC缓存
+///////////////////////////////////////////////////////////////
+class CacheAPC implements CacheInterface {
+	static private $prefix = '';
+	// 前缀
+	static public function setPrefix($prefix) {
+		self::$prefix = $prefix;
 	}
-
-	static private function makeCacheContent($content) {
-		return self::$cache_content_prev . $content . ';';
-	}
-
-
-	static public function setPrefix($c_file) {
-		if (function_exists('apc_add')) {
-			self::$cache_file = $c_file . '_';
+	// 写
+	static public function set($key, $value, $ttl = 0) {
+		if (function_exists('apc_store')) {
+			$_store_key = leapJoin(self::$prefix, '_', $key);
+			return apc_store($_store_key, $value, $ttl);
 		} else {
-			self::$cache_file = APP_ABS_PATH . DS . APP_NAME . DS . CACHE_DIR . DS . $c_file . '.cache';
-			if (!file_exists(dirname(self::$cache_file))) {
-				LeapFunction('mkdirs', dirname(self::$cache_file));
-			}
-			if (!file_exists(self::$cache_file)) {
-				file_put_contents(self::$cache_file, self::makeCacheContent('array()'));
-			}
+			throw new Exception('APC module not found.');
 		}
 	}
-
-	static public function set($key, $value, $expire = 0) {
-		if (function_exists('apc_add')) {
-			return apc_add(self::$cache_file . $key, $value);
-		} else {
-			$exist_cache = self::loadCacheFile();
-			$exist_cache[$key] = $value;
-
-			file_put_contents(self::$cache_file, self::makeCacheContent(var_export($exist_cache, true)));
-		}
-	}
-
+	
+	// 读
 	static public function get($key) {
 		if (function_exists('apc_fetch')) {
-			return apc_fetch(self::$cache_file . $key);
+			$_store_key = leapJoin(self::$prefix, '_', $key);
+			return apc_fetch($_store_key);
 		} else {
-			$exist_cache = self::loadCacheFile();
-			if (array_key_exists($key, (array)$exist_cache)) {
-				return $exist_cache[$key];
-			} else {
-				return null;
-			}
+			throw new Exception('APC module not found.');
+		}
+	}
+	
+	// 删
+	static public function delete($key) {
+		if (function_exists('apc_delete')) {
+			$_store_key = leapJoin(self::$prefix, '_', $key);
+			return apc_delete($_store_key);
+		} else {
+			throw new Exception('APC module not found.');
 		}
 	}
 }
 
+
+if (function_exists('apc_add')) {
+	class LeapCache extends CacheAPC {}
+} else {
+	throw new Exception('APC module not found.');
+}

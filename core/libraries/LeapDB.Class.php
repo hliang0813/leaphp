@@ -73,7 +73,6 @@ class LeapDB extends PDO {
 		if (!$this->sth) {
 			throw new Exception('PDOStatuement object not found.');
 		}
-		// 指定预处理的SQL语句
 		
 		// 绑定变量
 		$_result = $this->sth->execute($bind);
