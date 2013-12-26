@@ -60,10 +60,12 @@ set_exception_handler('leapException');
 
 // 自动装载类库
 function leapAutoload($class_name) {
+	// 框架库文件
 	$library_file = leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, $class_name, '.Class.php');
 	if (file_exists($library_file)) {
 		require_once $library_file;
 	} else {
+		// 框架插件入口文件
 		$sysplugin_file = leapJoin(__DIR__, DS, 'sysplugins', DS, $class_name, DS, 'init.plugin.php');
 		if (file_exists($sysplugin_file)) {
 			require_once $sysplugin_file;
