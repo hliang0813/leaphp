@@ -1,4 +1,13 @@
 <?php
+/**
+ * 文件上传操作
+ * 
+ * @author hliang
+ * @package leaphp
+ * @subpackage sysplugins
+ * @since 1.0.0
+ *
+ */
 class Upload extends Base {
 	// 配置KEY
 	static private $config_key = 'upload';
@@ -20,21 +29,46 @@ class Upload extends Base {
 	static private $upload_limit = array();
 
 	// 设置配置KEY
-	static public function setConfigKey($key) {
+	/**
+	 * 指定配置文件中的配置项key
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param string $key
+	 */
+	static public function setConfigKey($key = NULL) {
 		self::$config_key = $key;
 	}
 
-	// 设置文件上传限制
-	// extension
-	// maxsize
-	static public function setLimit($limit = array()) {
+	/**
+	 * 设置文件上传限制
+	 * $limit['extension'] 允许上传文件的扩展名，多个文件名用英文逗号分隔
+	 * $limit['maxsize'] 允许上传的文件大小，以KB为单位
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param array $limit
+	 */
+	static public function setLimit(array $limit = array()) {
 		if ($limit) {
 			self::$upload_limit = $limit;
 		}
 	}
 
-	// 上传文件动作
-	static public function send($field_name, $sub_folder = '', $rename = '') {
+	/**
+	 * 上传文件动作
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param string $field_name
+	 * @param string $sub_folder
+	 * @param string $rename
+	 * @return multitype:number string 
+	 */
+	static public function send($field_name = NULL, $sub_folder = '', $rename = '') {
 		// 初始化配置项目
 		if (!array_key_exists('server_path', (array)$GLOBALS['config'][self::$config_key]) || !array_key_exists('uri_path', (array)$GLOBALS['config'][self::$config_key])) {
 			die('使用上传文件模块，需要在配置文件中对其做相应的配置。');
@@ -102,6 +136,16 @@ class Upload extends Base {
 		}
 	}
 
+	/**
+	 * 设置结果返回值格式
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param string $data
+	 * @param number $err
+	 * @return multitype:number string 
+	 */
 	static private function output($data = '', $err = 0) {
 		return array(
 			'err' => $err,
@@ -109,7 +153,14 @@ class Upload extends Base {
 		);
 	}
 
-	// 处理上传错误方法
+	/**
+	 * 处理上传错误方法
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @return string|boolean
+	 */
 	static private function handleUploadError() {
 		switch (self::$upload_file['error']) {
 			case "1":
@@ -129,7 +180,15 @@ class Upload extends Base {
 	}
 
 
-	// 判断文件大小
+	/**
+	 * 判断文件大小
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param unknown $filesize
+	 * @return boolean
+	 */
 	static private function checkFileMaxsize($filesize) {
 		if (self::$upload_limit['maxsize']) {
 			if (intval($filesize) < intval(self::$upload_limit['maxsize'])) {
@@ -143,7 +202,15 @@ class Upload extends Base {
 	}
 
 
-	// 判断文件类型
+	/**
+	 * 判断文件类型
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param string $extension
+	 * @return boolean
+	 */
 	static private function checkFileMimetype($extension) {
 		if (self::$upload_limit['extension']) {
 			$extension_limits = explode(',', self::$upload_limit['extension']);
@@ -158,6 +225,15 @@ class Upload extends Base {
 		}
 	}
 
+	/**
+	 * 检查文件的MIMETYPE
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param unknown $extensions
+	 * @return multitype:string 
+	 */
 	static private function checkMimeType($extensions) {
 		$mimetype = array(
 			'323'   => array('text/h323'),

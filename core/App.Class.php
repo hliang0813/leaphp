@@ -1,4 +1,13 @@
 <?php
+/**
+ * 应用程序入口类，应用程序的总入口
+ * 
+ * @author hliang
+ * @package leaphp
+ * @subpackage core
+ * @since 1.0.0
+ *
+ */
 class App extends Base {
 	// 控制器名及方法名
 	static private $ctrl_name;
@@ -6,8 +15,15 @@ class App extends Base {
 	// URL中的参数列表
 	static public $params = array();
 	
-	// 解析URL地址
-	static private function parseURLS() {
+	/**
+	 * 解析url路径中的pathinfo信息，并从中获取到controller及action名称
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @throws LeapException
+	 */
+	static private function parseURLs() {
 		if (file_exists(URLS)) {
 			$pathinfo = filter_input(INPUT_SERVER, 'PATH_INFO');
 			// 指定cache的存储空间为URLS
@@ -29,26 +45,40 @@ class App extends Base {
 						unset(self::$params[0]);
 						// 缓存URL路径转发
 						$cache_data = array(self::$ctrl_name, self::$action_name, self::$params);
-						LeapCache::set($pathinfo, json_encode($cache_data));
+						LeapCache::set($pathinfo, json_encode($cache_data), 600);
 						break;
 					}
 				}
 			}
 		} else {
 			// 如果没有找到URL配置文件
-			throw new Exception('Could not find router file.', 824200003);
+			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Could not find router file.'));
 		}
 
 		if (!isset(self::$ctrl_name) || !isset(self::$action_name)) {
-			throw new Exception('Could not find router rule.', 824200010);
+			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Could not find router rule.'));
 		}
 
 		// 引入控制器类文件
-		$ctrl_file = leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, ACTION_DIR, DS, self::$ctrl_name, '.ctrl.php');
-		require_once $ctrl_file;
+		$ctrl_file = leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, CONTROLLER_DIR, DS, self::$ctrl_name, '.ctrl.php');
+		if (file_exists($ctrl_file)) {
+			require_once $ctrl_file;
+		} else {
+			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Unsigned controller.'));
+		}
 	}
 	
-	// 初始化使用框架的应用常量
+	/**
+	 * 初始化框架模板页会用到的常量
+	 * 
+	 * ENTRY_URI 入口文件的绝对uri，不带域名、不带pathinfo、不带参数
+	 * ENTRY_FILE 入口文件名
+	 * PATH 入口文件的uri路径，不带文件名
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 */
 	static private function initialize() {
 		// 应用的访问URI
 		define('ENTRY_URI', filter_input(INPUT_SERVER, 'SCRIPT_NAME'));
@@ -58,12 +88,19 @@ class App extends Base {
 		define('PATH', dirname(ENTRY_URI));
 	}
 
-	// 应用开始，框架入口
+	/**
+	 * 应用开始，框架主入口
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @throws LeapException
+	 */
 	static public function run() {
 		// 初始化应用常量
 		self::initialize();
 		// 解析URL地址
-		self::parseURLS();
+		self::parseURLs();
 
 		// 实例化控制器类
 		$app = new self::$ctrl_name;
@@ -72,7 +109,7 @@ class App extends Base {
 			$method = self::$action_name;
 			call_user_func_array(array($app, $method), self::$params);
 		} else {
-			throw new Exception('Unsigned action.', 824200005);
+			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Unsigned action.'));
 		}
 	}
 }

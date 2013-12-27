@@ -1,21 +1,29 @@
 <?php
+/**
+ * Base类是框架全部其它类的基类
+ * 
+ * @author hliang
+ * @package leaphp
+ * @subpackage 
+ * @since 1.0.0
+ *
+ */
 class Base {
-	// 检查一字符串是否以另一字符串开头
-	static public function startWith($str, $match) {
-		if (substr($str, 0, strlen($match)) == $match) {
+	/**
+	 * 判断一个字符串$string是否以另一个字符串$substring开头
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param string $string
+	 * @param string $substring
+	 * @return boolean
+	 */
+	static public function startWith($string, $substring) {
+		if (substr($string, 0, strlen($substring)) == $substring) {
 			return true;
 		} else {
 			return false;
-		}
-	}
-
-	// 加载数据库配置文件
-	static protected function configure($config) {
-		$config_file = realpath(CONFIG_DIR . DS . 'configure.ini');
-		if (file_exists($config_file)) {
-			return parse_ini_file($config_file, true)[$config];
-		} else {
-			throw new Exception("Error on loading database configuration file.", 824209001);
 		}
 	}
 }

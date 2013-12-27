@@ -7,8 +7,14 @@ if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50400) {
 define('LEAPHP_VERSION_ID', '1.0.0');
 define('LEAPHP_VERSION_RELEASE', 'alpha');
 
-// 指定必要的HEADER内容	
-error_reporting(7);
+// 指定必要的HEADER内容
+// 设置默认DEBUG开关
+defined('DEBUG') or define('DEBUG', false);
+if (DEBUG) {
+	error_reporting(7);
+} else {
+	error_reporting(0);
+}
 header("Content-type: text/html; charset=utf-8");
 date_default_timezone_set('Asia/Shanghai');
 
@@ -22,14 +28,12 @@ define('APP_ABS_PATH', dirname(filter_input(INPUT_SERVER, 'SCRIPT_FILENAME')));
 
 // 设置框架系统插件目录
 defined('SYSPLUGIN_DIR') or define('SYSPLUGIN_DIR', leapJoin(__DIR__, DS, 'sysplugins'));
-// 设置默认DEBUG开关
-defined('DEBUG') or define('DEBUG', false);
 // 设置应用APP名称
 defined('APP_NAME') or define('APP_NAME', 'leapapp');
 // 设置配置文件相对目录CONFIG_DIR
 defined('CONFIG_DIR') or define('CONFIG_DIR', 'configs');
 // 设置控制器文件相对目录ACTION_DIR
-defined('ACTION_DIR') or define('ACTION_DIR', 'actions');
+defined('CONTROLLER_DIR') or define('CONTROLLER_DIR', 'controllers');
 // 设置业务类目录
 defined('BIZ_DIR') or define('BIZ_DIR', 'business');
 // 设置ORM对象目录
@@ -37,16 +41,7 @@ defined('ORM_DIR') or define('ORM_DIR', 'models');
 // 设置CACHE目录
 defined('CACHE_DIR') or define('CACHE_DIR', 'caches');
 
-// 引入框架文件
-require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'Plugins.Function.php');
-require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'Params.Function.php');
-require_once leapJoin(__DIR__, DS, 'core', DS, 'Base.Class.php');
-require_once leapJoin(__DIR__, DS, 'core', DS, 'Copyright.Class.php');
-require_once leapJoin(__DIR__, DS, 'core', DS, 'App.Class.php');
-require_once leapJoin(__DIR__, DS, 'core', DS, 'Action.Class.php');
-require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'LeapCache.Class.php');
-
-// LeaPHP 统一异常处理
+// LeaPHP 统一捕获异常
 function leapException($e) {
 	$error = sprintf('[ERROR #%d] %s', $e->getCode(), $e->getMessage());
 	echo $error;
@@ -56,6 +51,16 @@ function leapException($e) {
 	exit();
 }
 set_exception_handler('leapException');
+
+// 引入框架文件
+require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'LeapException.Class.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'Plugins.Function.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'Params.Function.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'LeapCache.Class.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'Base.Class.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'Copyright.Class.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'App.Class.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'Controller.Class.php');
 
 
 // 自动装载类库
@@ -71,31 +76,13 @@ function leapAutoload($class_name) {
 			require_once $sysplugin_file;
 		}
 	}
-	
-	
-	// 根据leaphp的目录结构设置自动装载的位置
-// 	$c_map = array(
-// 		'Model'			=> '',
-// 		'DataBase'		=> leapJoin('db', DS),
-// 		'Db'			=> leapJoin('db', DS),
-// 		'MasterSlave'	=> leapJoin('db', DS),
-// 		'PageNav'		=> leapJoin('libraries', DS),
-// 	);
-// 	if (array_key_exists($class_name, $c_map)) {
-// 		$class_file = leapJoin(__DIR__, DS, 'core', DS, $c_map[$class_name], $class_name, '.Class.php');
-// 	} else {
-// 		$class_file = leapJoin(__DIR__, DS, 'sysplugins', DS, $class_name, DS, 'init.plugin.php');
-// 	}
-// 	if (file_exists($class_file)) {
-// 		require_once $class_file;
-// 	}
 }
 spl_autoload_register('leapAutoload');
 
 // 加载配置文件
 if (file_exists($config_file = leapJoin(APP_ABS_PATH, DS, CONFIG_DIR, DS, 'config.ini.php'))) {
 	require_once $config_file;
-	LeapConfigure::set($config);
+	LeapConfigure::load($config);
 }
 
 
