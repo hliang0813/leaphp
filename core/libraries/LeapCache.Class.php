@@ -71,7 +71,7 @@ class CacheAPC implements CacheInterface {
 	 * 实现了接口中的setPrefix方法
 	 * 
 	 * @author hliang
-	 * @since 
+	 * @since 1.0.0
 	 * 
 	 * @param string $prefix
 	 */
@@ -83,7 +83,7 @@ class CacheAPC implements CacheInterface {
 	 * 实现了接口中的set方法
 	 * 
 	 * @author hliang
-	 * @since 
+	 * @since 1.0.0
 	 * 
 	 * @param string $key
 	 * @param string $value
@@ -104,7 +104,7 @@ class CacheAPC implements CacheInterface {
 	 * 实现了接口中的get方法
 	 * 
 	 * @author hliang
-	 * @since 
+	 * @since 1.0.0
 	 * 
 	 * @param string $key
 	 * @throws LeapException
@@ -123,7 +123,7 @@ class CacheAPC implements CacheInterface {
 	 * 实现了接口中的delete方法
 	 * 
 	 * @author hliang
-	 * @since 
+	 * @since 1.0.0
 	 * 
 	 * @param string $key
 	 * @throws LeapException

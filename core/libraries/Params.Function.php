@@ -19,6 +19,10 @@ function _session($key) {
 	return filter_input(INPUT_SESSION, $key);
 }
 
+function _server($key) {
+	return filter_input(INPUT_SERVER, $key);
+}
+
 function _files($key) {
 	return $_FILES[$key];
 }

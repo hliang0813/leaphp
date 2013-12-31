@@ -15,7 +15,7 @@ class LeapConfigure {
 	 * 读取全部配置内容
 	 * 
 	 * @author hliang
-	 * @since 
+	 * @since 1.0.0
 	 * 
 	 * @param array $config
 	 */

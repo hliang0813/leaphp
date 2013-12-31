@@ -9,64 +9,12 @@
  *
  */
 class App extends Base {
-	// 控制器名及方法名
-	static private $ctrl_name;
-	static private $action_name;
-	// URL中的参数列表
-	static public $params = array();
+	// controller及action名称
+	static private $controller;
+	static private $action;
 	
-	/**
-	 * 解析url路径中的pathinfo信息，并从中获取到controller及action名称
-	 * 
-	 * @author hliang
-	 * @since 1.0.0
-	 * 
-	 * @throws LeapException
-	 */
-	static private function parseURLs() {
-		if (file_exists(URLS)) {
-			$pathinfo = filter_input(INPUT_SERVER, 'PATH_INFO');
-			// 指定cache的存储空间为URLS
-			LeapCache::setPrefix(leapJoin('URLS_', APP_ABS_PATH));
-			// 尝试从cache中读取路径配置
-			$cache_data = LeapCache::get($pathinfo);
-			if ($cache_data) {
-				// 如果缓存了URL转发路径
-				list(self::$ctrl_name, self::$action_name, self::$params) = json_decode($cache_data, true);
-			} else {
-				// 没缓存URL转发路径，加载路径配置文件
-				$urls = require_once URLS;
-				// 开始匹配URL地址
-				foreach ((array)$urls as $pattern => $handler) {
-					preg_match($pattern, $pathinfo, self::$params);
-					// 匹配到合适的路径配置
-					if (!empty(self::$params)) {
-						list(self::$ctrl_name, self::$action_name) = explode('.', $handler);
-						unset(self::$params[0]);
-						// 缓存URL路径转发
-						$cache_data = array(self::$ctrl_name, self::$action_name, self::$params);
-						LeapCache::set($pathinfo, json_encode($cache_data), 600);
-						break;
-					}
-				}
-			}
-		} else {
-			// 如果没有找到URL配置文件
-			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Could not find router file.'));
-		}
-
-		if (!isset(self::$ctrl_name) || !isset(self::$action_name)) {
-			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Could not find router rule.'));
-		}
-
-		// 引入控制器类文件
-		$ctrl_file = leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, CONTROLLER_DIR, DS, self::$ctrl_name, '.ctrl.php');
-		if (file_exists($ctrl_file)) {
-			require_once $ctrl_file;
-		} else {
-			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Unsigned controller.'));
-		}
-	}
+	// dispatch在缓存中的生存周期
+	static private $dispatch_cache_ttl = 20;
 	
 	/**
 	 * 初始化框架模板页会用到的常量
@@ -81,7 +29,7 @@ class App extends Base {
 	 */
 	static private function initialize() {
 		// 应用的访问URI
-		define('ENTRY_URI', filter_input(INPUT_SERVER, 'SCRIPT_NAME'));
+		define('ENTRY_URI', _server('SCRIPT_NAME'));
 		// 应用的入口文件名
 		define('ENTRY_FILE', pathinfo(ENTRY_URI)['basename']);
 		// 应用的访问URI目录
@@ -99,15 +47,51 @@ class App extends Base {
 	static public function run() {
 		// 初始化应用常量
 		self::initialize();
-		// 解析URL地址
-		self::parseURLs();
+		
+		// 初始化并设置dispatcher的缓存前缀及key
+		LeapCache::setPrefix('LEAPDISPATCH_');
+		$dispatch_cache_key = leapJoin(APP_ABS_PATH, '_', _server('PATH_INFO'));
+		
+		// 尝试从缓存中读取dispatch信息
+		$disp_res = LeapCache::get($dispatch_cache_key);
+		
+		if (!$disp_res) {
+			// 如果缓存读取失败，从dispatch文件中获取，并写入缓存
+			$disp_res = Dispatch::route();
+			LeapCache::set($dispatch_cache_key, json_encode($disp_res), self::$dispatch_cache_ttl);
+		} else {
+			// 读取成功，将缓存中数据转换成可以使用的object
+			$disp_res = json_decode($disp_res);
+		}
+		
+		// 如果路由的pathinfo不存在，即访问一个不合法的地址
+		if ($disp_res->pathinfo === NULL) {
+			LeapFunction('sendheader', 404);
+		}
+		
+		// 检查请求方式是否正确
+		if (!in_array(_server('REQUEST_METHOD'), $disp_res->methods)) {
+			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Request method does not allowed.'));
+		}
+		
+		// 获取controller和action的名称
+		list(self::$controller, self::$action) = explode('::', $disp_res->callback);
+		
+		// 检查controller文件是否存在，并引入
+		$controller_file = leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, CONTROLLER_DIR, DS, self::$controller, '.ctrl.php');
+		if (file_exists($controller_file)) {
+			require_once $controller_file;
+		} else {
+			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Unsigned controller.'));
+		}
+		
 
-		// 实例化控制器类
-		$app = new self::$ctrl_name;
-		if (method_exists($app, self::$action_name)) {
-			// 动态调用控制器类中的方法
-			$method = self::$action_name;
-			call_user_func_array(array($app, $method), self::$params);
+		// 实例化controller
+		$app = new self::$controller;
+		
+		// 检查controller中是否有action方法，并调用
+		if (method_exists($app, self::$action)) {
+			call_user_func_array(array($app, self::$action), $disp_res->params);
 		} else {
 			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Unsigned action.'));
 		}

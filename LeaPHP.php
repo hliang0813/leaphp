@@ -61,6 +61,7 @@ require_once leapJoin(__DIR__, DS, 'core', DS, 'Base.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'Copyright.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'App.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'Controller.Class.php');
+require_once leapJoin(__DIR__, DS, 'core', DS, 'Dispatch.Class.php');
 
 
 // 自动装载类库
