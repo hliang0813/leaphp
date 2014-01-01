@@ -10,4 +10,12 @@ class LeapTemplate extends Smarty {
 		parent::setLeftDelimiter('<{');
 		parent::setRightDelimiter('}>');
 	}
+	
+	public function display($template=null, $cache_id=null, $compile_id=null, $parent=null) {
+		if (!$template) {
+			$template = leapJoin(App::getController(), DS, App::getAction(), '.html');
+		}
+		
+		parent::display($template, $cache_id, $compile_id, $parent);
+	}
 }

@@ -96,4 +96,12 @@ class App extends Base {
 			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Unsigned action.'));
 		}
 	}
+	
+	static public function getController() {
+		return self::$controller;
+	}
+	
+	static public function getAction() {
+		return self::$action;
+	}
 }

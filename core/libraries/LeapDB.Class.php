@@ -36,7 +36,7 @@ class LeapDB extends PDO {
 				$this->configure['dbname'],
 				$this->configure['charset']);
 		// 初始化父类
-		parent::__construct($_dsn, $this->configure['username'], $this->configure['password']);
+		parent::__construct($_dsn, $this->configure['username'], $this->configure['password'], array(parent::ATTR_PERSISTENT => true));
 	}
 	
 	/**
