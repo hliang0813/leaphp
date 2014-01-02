@@ -18,7 +18,6 @@ if (DEBUG) {
 header("Content-type: text/html; charset=utf-8");
 date_default_timezone_set('Asia/Shanghai');
 
-
 // 设置系统分隔符
 define ('DS', DIRECTORY_SEPARATOR);
 // 设置框架本身的绝对路径
@@ -63,7 +62,6 @@ require_once leapJoin(__DIR__, DS, 'core', DS, 'App.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'Controller.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'Dispatch.Class.php');
 
-
 // 自动装载类库
 function leapAutoload($class_name) {
 	// 框架库文件
@@ -83,7 +81,9 @@ spl_autoload_register('leapAutoload');
 // 加载配置文件
 if (file_exists($config_file = leapJoin(APP_ABS_PATH, DS, CONFIG_DIR, DS, 'config.ini.php'))) {
 	require_once $config_file;
-	LeapConfigure::load($config);
+	if (is_array($config)) {
+		LeapConfigure::load($config);
+	}
 }
 
 
