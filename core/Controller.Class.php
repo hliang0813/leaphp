@@ -23,6 +23,9 @@ class Controller extends Base {
 	 * @throws LeapException
 	 */
 	public function __call($method, $params) {
+		$logger = LeapLogger::getLogger(__METHOD__);
+		$logger->trace(leapJoin('method:', $method, ';params:', var_export($params, true)));
+		
 		switch (explode('_', $method, 2)[0]) {
 			case 'tpl':
 				// 根据前缀来判断调用何种方法
@@ -58,6 +61,8 @@ class Controller extends Base {
 	 */
 	static protected function redirect($url = '') {
 		$url = $url == '' ? filter_input(INPUT_SERVER, 'HTTP_REFERER') : $url;
+		$logger = LeapLogger::getLogger(__METHOD__);
+		$logger->trace(leapJoin('redirect_to:', $url));
 		header(leapJoin('Location: ', $url));
 		exit;
 	}

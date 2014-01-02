@@ -86,7 +86,6 @@ if (file_exists($config_file = leapJoin(APP_ABS_PATH, DS, CONFIG_DIR, DS, 'confi
 	}
 }
 
-
 // 文件的安全限制，不允许框架文件单独使用
 function leapLimit() {
 	return true;

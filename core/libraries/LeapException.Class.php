@@ -20,6 +20,9 @@ class LeapException extends Exception {
 	 * @return string
 	 */
 	static public function leapMsg($module = NULL, $message = NULL) {
+		$logger = LeapLogger::getLogger($module);
+		$logger->fatal(leapJoin('throw_LeapException:', $message));
+		
 		if (DEBUG) {
 			$message = leapJoin('BLOCK: ', $module, '; MESSAGE: ', $message);
 		} else {

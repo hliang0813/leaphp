@@ -18,7 +18,7 @@ class LeapLogger extends Logger {
 						'layout' => array(
 							'class' => 'LoggerLayoutPattern',
 							'params' => array(
-								'conversionPattern' => "%d{Y-m-d H:i:s} - %-5p - %c - %X{username}: %m in %F at %L%n",
+								'conversionPattern' => "%d{Y-m-d H:i:s} - %-5p - %c - %m - %F at %L%n",
 							),
 						),
 						'params' => array(
