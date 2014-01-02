@@ -49,7 +49,7 @@ class App extends Base {
 		self::initialize();
 		
 		// 初始化并设置dispatcher的缓存前缀及key
-		LeapCache::setPrefix('LEAPDISPATCH_');
+		LeapCache::setPrefix('LEAPDISPATCH');
 		$dispatch_cache_key = leapJoin(APP_ABS_PATH, '_', _server('PATH_INFO'));
 		
 		// 尝试从缓存中读取dispatch信息
