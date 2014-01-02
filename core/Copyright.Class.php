@@ -32,7 +32,7 @@ class Copyright extends Base {
 	 * @return string
 	 */
 	static function version() {
-		return "Version " . LEAPHP_VERSION_ID;
+		return "Version " . LEAPHP_VERSION_ID . ' ' . LEAPHP_VERSION_RELEASE;
 	}
 
 	/**
