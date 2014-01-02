@@ -72,9 +72,9 @@ class Copyright extends Base {
 		$content = '<title>Welcome to LeaPHP default page !</title>
 			<div style="font-family:Arial; font-size:13px; padding:10px; border:1px dashed #999; background:rgb(199,223,255)">
 			<h1>Welcome to LeaPHP default page !</h1>
-			<p>' . self::frameworkCopyright() . '</p>
-			<p>' . self::frameworkLatestVersion() . '</p>
-			<p>' . self::frameworkVersion() . '</p></div>';
+			<p>' . self::powerby() . '</p>
+			<p>' . self::update() . '</p>
+			<p>' . self::version() . '</p></div>';
 		echo $content;	
 	}
 }
