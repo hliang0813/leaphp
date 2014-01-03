@@ -20,6 +20,8 @@ class Dispatch extends Base {
 	 * 
 	 */
 	static public function route() {
+		$logger = LeapLogger::getLogger(__METHOD__);
+		
 		self::loadDispRouter();
 		
 		// 逐一读取路由规则并分析
@@ -42,6 +44,8 @@ class Dispatch extends Base {
 			'callback' => $callback,
 			'params' => self::$params,
 		);
+		
+		$logger->trace(leapJoin('route_request_to:', var_export($route_info, true)));
 		
 		return (object)$route_info;
 	}
@@ -68,6 +72,9 @@ class Dispatch extends Base {
 	 * @param string $callback
 	 */
 	static public function append($method, $path, $callback) {
+		$logger = LeapLogger::getLogger(__METHOD__);
+		$logger->trace(leapJoin('append_dispatch;method:', $method, ';path:', $path, ';callback:', $callback));
+		
 		array_push(self::$routers, array(
 			(array)$method, $path, $callback,
 		));

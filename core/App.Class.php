@@ -41,6 +41,11 @@ class App extends Base {
 		define('PATH', dirname(ENTRY_URI));
 		$logger->trace(leapJoin('PATH:', PATH));
 	}
+	
+	static private function buildinDispatch() {
+		// 固定的内置dispatch
+		Dispatch::append('GET', '/^\/resource.pack$/', 'ResourcePack::webInterface');
+	}
 
 	/**
 	 * 应用开始，框架主入口
@@ -55,6 +60,8 @@ class App extends Base {
 		
 		// 初始化应用常量
 		self::initialize();
+		
+		self::buildinDispatch();
 		
 		// 初始化并设置dispatcher的缓存前缀及key
 		LeapCache::setPrefix('LEAPDISPATCH');
@@ -91,26 +98,32 @@ class App extends Base {
 		// 获取controller和action的名称
 		list(self::$controller, self::$action) = explode('::', $disp_res->callback);
 		$logger->trace(leapJoin('controller:', self::$controller, ';action:', self::$action));
-		
-		// 检查controller文件是否存在，并引入
-		$controller_file = leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, CONTROLLER_DIR, DS, self::$controller, '.ctrl.php');
-		$logger->trace(leapJoin('controller_file:', $controller_file));
-		if (file_exists($controller_file)) {
-			require_once $controller_file;
+				
+		// 如果controller类不存在
+		if (!class_exists(self::$controller)) {
+			// 检查controller文件是否存在，并引入
+			$controller_file = leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, CONTROLLER_DIR, DS, self::$controller, '.ctrl.php');
+			$logger->trace(leapJoin('controller_file:', $controller_file));
+			if (file_exists($controller_file)) {
+				require_once $controller_file;
+			} else {
+				throw new LeapException(LeapException::leapMsg(__METHOD__, 'Unsigned controller.'));
+			}
+			
+			// 实例化controller
+			$app = new self::$controller;
 		} else {
-			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Unsigned controller.'));
+			$app = self::$controller;
 		}
-		
-
-		// 实例化controller
-		$app = new self::$controller;
-		
+					
 		// 检查controller中是否有action方法，并调用
 		if (method_exists($app, self::$action)) {
 			call_user_func_array(array($app, self::$action), $disp_res->params);
 		} else {
 			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Unsigned action.'));
 		}
+		
+		
 	}
 	
 	static public function getController() {
