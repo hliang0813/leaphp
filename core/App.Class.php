@@ -44,7 +44,7 @@ class App extends Base {
 	
 	static private function buildinDispatch() {
 		// 固定的内置dispatch
-		Dispatch::append('GET', '/^\/resource.pack$/', 'ResourcePack::webInterface');
+		Dispatch::append('GET', '/^\/buildin\/resource.pack$/', 'ResourcePack::webInterface');
 	}
 
 	/**

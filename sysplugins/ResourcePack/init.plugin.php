@@ -30,7 +30,7 @@ class ResourcePack extends Base {
 			foreach ($res['scripts'] as $leaf) {
 				array_push($_params, leapJoin('script[]=', $leaf));
 			}
-			$_resource_uri = leapJoin(ENTRY_URI, '/resource.pack?', implode('&', $_params));
+			$_resource_uri = leapJoin(ENTRY_URI, '/buildin/resource.pack?', implode('&', $_params));
 			$_output = leapJoin('<script type="text/javascript" src="', $_resource_uri, '"></script>');
 			echo $_output;
 		}
