@@ -2,7 +2,7 @@
 
 一个简单的PHP快速开发框架。
 
-当前版本`v1.0.0(alpha)`
+当前版本 `v1.0.0(alpha)`
 
 ## Description
 
@@ -15,9 +15,7 @@
 
 ## TODO
 
-## Copyright and License
-
 ## See Also
 * [LeaPHP Framework 项目主页](http://hliang0813.github.io/leaphp/)
-* [LeaPHP Framework Wiki](https://github.com/hliang0813/leaphp1/wiki)
+* [LeaPHP Framework 开发手册](https://github.com/hliang0813/leaphp/tree/master/wiki)
 

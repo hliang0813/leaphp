@@ -32,7 +32,7 @@ class ResourcePack extends Base {
 			}
 			$_resource_uri = leapJoin(ENTRY_URI, '/buildin/resource.pack?', implode('&', $_params));
 			$_output = leapJoin('<script type="text/javascript" src="', $_resource_uri, '"></script>');
-			echo $_output;
+			return $_output;
 		}
 	}
 	

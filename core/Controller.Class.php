@@ -23,8 +23,8 @@ class Controller extends Base {
 	 * @throws LeapException
 	 */
 	public function __call($method, $params) {
-		$logger = LeapLogger::getLogger(__METHOD__);
-		$logger->trace(leapJoin('method:', $method, ';params:', var_export($params, true)));
+		$logger = LeapLogger::getLogger('lpf_mainloop::' . __METHOD__);
+		$logger->trace('请求controller的扩展方法 -> ' . $method . '; 参数 -> ' . var_export($params, true));
 		
 		switch (explode('_', $method, 2)[0]) {
 			case 'tpl':
@@ -37,7 +37,7 @@ class Controller extends Base {
 					self::$template = new LeapTemplate;
 				}
 				if (method_exists(self::$template, $tpl_method)) {
-					$logger->trace(leapJoin('call_user_function:LeapTemplate::', $tpl_method));
+// 					$logger->trace(leapJoin('call_user_function:LeapTemplate::', $tpl_method));
 					// 动态调用方法
 					call_user_func_array(array(self::$template, $tpl_method), $params);
 				} else {
