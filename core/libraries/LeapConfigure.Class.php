@@ -19,7 +19,7 @@ class LeapConfigure {
 	 * 
 	 * @param array $config
 	 */
-	public static function load(array $config) {
+	public static function load($config) {
 		self::$configure = $config;
 	}
 	
