@@ -47,8 +47,10 @@ class App extends Base {
 	static private function buildinDispatch() {
 		$logger = LeapLogger::getLogger('lpf_mainloop::' . __METHOD__);
 		$logger->trace('开始设置框架内部dispatcher。');
-		// 固定的内置dispatch
-		Dispatch::append('GET', '/^\/buildin\/resource.pack$/', 'ResourcePack::webInterface');
+		// 打包javascript资源
+		Dispatch::append('GET', '/^\/buildin\/resource.js$/', 'ResourcePack::webInterface');
+		// 安装器程序
+// 		Dispatch::append('GET', '/^\/buildin\/install$/', 'BuildInApp::Install');
 		$logger->trace('成功设置框架内部dispatcher。');
 	}
 

@@ -13,7 +13,7 @@ use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
 
 class ResourcePack extends Base {
-	static private function pack($script, $css) {
+	static private function pack($script) {
 		$_resources = array();
 		foreach ((array)$script as $src) {
 			array_push($_resources, new FileAsset(leapJoin(APP_ABS_PATH, $src)));
@@ -30,13 +30,21 @@ class ResourcePack extends Base {
 			foreach ($res['scripts'] as $leaf) {
 				array_push($_params, leapJoin('script[]=', $leaf));
 			}
-			$_resource_uri = leapJoin(ENTRY_URI, '/buildin/resource.pack?', implode('&', $_params));
+			$_resource_uri = leapJoin(ENTRY_URI, '/buildin/resource.js?', implode('&', $_params));
 			$_output = leapJoin('<script type="text/javascript" src="', $_resource_uri, '"></script>');
 			return $_output;
 		}
 	}
 	
+	static public function CSS() {
+		$scripts = func_get_args();
+		$_output = '<style>';
+		$_output .= self::pack($scripts);
+		$_output .= '</style>';
+		return $_output;
+	}
+	
 	static public function webInterface() {
-		die(self::pack($_GET['script'], $_GET['css']));
+		die(self::pack($_GET['script']));
 	}
 }
