@@ -1,7 +1,7 @@
 <?php
 class RedisClient {
 	static private $configure = array();
-	static private $switcher = 'master';
+	
 	static private $conn_master;
 	static private $conn_slave;
 	
@@ -149,8 +149,6 @@ class RedisClient {
 		
 		if (!in_array($method, self::$method_read)) {
 			$logger->trace('判定请求方法为写方法，选择主连接。');
-			self::$switcher = 'master';
-			$_switcher = 'master';
 			$used_config = array(
 				'host' => self::$configure['master']['host'],
 				'port' => self::$configure['master']['port'],
@@ -165,8 +163,6 @@ class RedisClient {
 			return $this->conn_master;
 		} else {
 			$logger->trace('判定请求方法为读方法，选择从连接。');
-			self::$switcher = 'slave';
-			$_switcher = 'slave';
 			$pool = array(self::$configure['master']);
 			if (array_key_exists('slave', self::$configure)) {
 				$logger->trace('从连接配置为单连接。');
