@@ -24,10 +24,10 @@ class LeapDB extends PDO {
 	 * 
 	 * @param string $cfg_mode
 	 */
-	public function __construct($cfg_mode = 'master') {
+	public function __construct($cfg_mode = 'master', $config = 'database') {
 		// 加载配置文件
-		$this->driver = LeapConfigure::get('database')['driver'];
-		$this->configure = LeapConfigure::get('database')[$cfg_mode];
+		$this->driver = LeapConfigure::get($config)['driver'];
+		$this->configure = LeapConfigure::get($config)[$cfg_mode];
 		// 生成DSN字符串
 		$_dsn = sprintf('%s:host=%s;port=%d;dbname=%s;charset=%s',
 				$this->driver,
