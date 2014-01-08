@@ -8,6 +8,9 @@ define('LEAPHP_VERSION_ID', '1.0.0');
 define('LEAPHP_VERSION_RELEASE', 'alpha');
 
 // 指定必要的HEADER内容
+header("Content-type: text/html; charset=utf-8");
+date_default_timezone_set('Asia/Shanghai');
+
 // 设置默认DEBUG开关
 defined('DEBUG') or define('DEBUG', false);
 if (DEBUG) {
@@ -15,8 +18,6 @@ if (DEBUG) {
 } else {
 	error_reporting(0);
 }
-header("Content-type: text/html; charset=utf-8");
-date_default_timezone_set('Asia/Shanghai');
 
 // 设置系统分隔符
 define ('DS', DIRECTORY_SEPARATOR);
@@ -99,13 +100,6 @@ function leapAutoload($class_name) {
 // 		throw new LeapException(LeapException::leapMsg('leapAutoload', $class_name . ' not found.'));
 		echo $class_name, '<br>';
 	} */
-}
-
-
-
-// 文件的安全限制，不允许框架文件单独使用
-function leapLimit() {
-	return true;
 }
 
 // 连接字符串，效率高于使用.来连接
