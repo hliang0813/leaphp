@@ -1,6 +1,4 @@
 <?php
-require_once leapJoin(__DIR__, DS, 'log4php', DS, 'Logger.php');
-
 class LeapLogger extends Logger {
 	static private $is_load_config = false;
 	

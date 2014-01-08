@@ -42,6 +42,7 @@ defined('BUSINESS_DIR') or define('BUSINESS_DIR', leapJoin(APP_ABS_PATH, DS, 'bu
 // 设置CACHE目录
 // defined('CACHE_DIR') or define('CACHE_DIR', 'caches');
 
+require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'log4php', DS, 'Logger.php');
 spl_autoload_register('leapAutoload');
 set_exception_handler('leapException');
 
@@ -94,7 +95,10 @@ function leapAutoload($class_name) {
 	} elseif (file_exists($business_file)) {
 		// 自动加载业务类
 		require_once $business_file;
-	}
+	} /* else {
+// 		throw new LeapException(LeapException::leapMsg('leapAutoload', $class_name . ' not found.'));
+		echo $class_name, '<br>';
+	} */
 }
 
 
