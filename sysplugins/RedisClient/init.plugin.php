@@ -132,6 +132,11 @@ class RedisClient {
 	);
 	
 	public function __construct($config = 'redis') {
+		$_class_redis_exists = class_exists('Redis');
+		if (!$_class_redis_exists) {
+			throw new LeapException(LeapException::leapMsg('lpf_plugins::' . __METHOD__, '没有检测到PHP-REDIS扩展。'));
+		}
+		
 		$logger = LeapLogger::getLogger('lpf_plugins::' . __METHOD__);
 		$logger->trace(leapJoin('RedisClient配置文件 -> ', $config));
 		
@@ -152,7 +157,7 @@ class RedisClient {
 			);
 			
 			if (!$this->conn_master) {
-				$logger->trace('初始化Redis主链接对象。');
+				$logger->trace('初始化Redis主链接对象。连接 -> ' . var_export($used_config, true));
 				$this->conn_master = new Redis();
 				$this->conn_master->pconnect($used_config['host'], $used_config['port']);
 			}
@@ -175,7 +180,7 @@ class RedisClient {
 			
 			$used_config = $pool[rand(0, count($pool) - 1)];
 			if (!$this->conn_slave) {
-				$logger->trace('初始化Redis从连接对象。');
+				$logger->trace('初始化Redis从连接对象。连接 -> ' . var_export($used_config, true));
 				$this->conn_slave = new Redis();
 				$this->conn_slave->pconnect($used_config['host'], $used_config['port']);
 			}
