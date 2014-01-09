@@ -22,7 +22,8 @@ class MemcacheClient extends Memcached {
 			'persistant' => false,
 		);
 		$user_config = LeapConfigure::get($config);
-		$config = array_merge($default_config, $user_config ? $user_config : array());
+		$config = LeapFunction('array_merge', $default_config, $user_config ? $user_config : array());
+		
 		parent::Memcached($config);
 	}
 }
