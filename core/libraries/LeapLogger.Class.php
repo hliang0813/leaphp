@@ -7,7 +7,7 @@ class LeapLogger extends Logger {
 			$default_config = array(
 				'threshold' => 'ALL',
 				'rootLogger' => array(
-					'level' => 'INFO',
+					'level' => 'ERROR',
 					'appenders' => array('default'),
 				),
 				'appenders' => array(
@@ -28,7 +28,7 @@ class LeapLogger extends Logger {
 				),
 			);
 			
-			$configuration = array_merge($default_config, $configuration);
+			$configuration = LeapFunction('array_merge', $default_config, $configuration);
 			
 			parent::configure($configuration, $configurator);
 			self::$is_load_config = true;
