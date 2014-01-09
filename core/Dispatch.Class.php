@@ -92,9 +92,6 @@ class Dispatch extends Base {
 	static private function loadDispRouter() {
 		if (file_exists(DISPATCH)) {
 			require_once DISPATCH;
-		} /* else {
-			// 如果没有找到dispatch配置文件
-			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Could not find router file.'));
-		} */
+		}
 	}
 }

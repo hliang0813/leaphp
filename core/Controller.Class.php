@@ -37,7 +37,6 @@ class Controller extends Base {
 					self::$template = new LeapTemplate;
 				}
 				if (method_exists(self::$template, $tpl_method)) {
-// 					$logger->trace(leapJoin('call_user_function:LeapTemplate::', $tpl_method));
 					// 动态调用方法
 					call_user_func_array(array(self::$template, $tpl_method), $params);
 				} else {

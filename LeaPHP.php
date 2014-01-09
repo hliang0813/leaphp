@@ -96,10 +96,7 @@ function leapAutoload($class_name) {
 	} elseif (file_exists($business_file)) {
 		// 自动加载业务类
 		require_once $business_file;
-	} /* else {
-// 		throw new LeapException(LeapException::leapMsg('leapAutoload', $class_name . ' not found.'));
-		echo $class_name, '<br>';
-	} */
+	}
 }
 
 // 连接字符串，效率高于使用.来连接

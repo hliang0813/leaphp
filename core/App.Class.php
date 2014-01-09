@@ -49,8 +49,6 @@ class App extends Base {
 		$logger->trace('开始设置框架内部dispatcher。');
 		// 打包javascript资源
 		Dispatch::append('GET', '/^\/buildin\/resource.js$/', 'ResourcePack::webInterface');
-		// 安装器程序
-// 		Dispatch::append('GET', '/^\/buildin\/install$/', 'BuildInApp::Install');
 		$logger->trace('成功设置框架内部dispatcher。');
 	}
 
