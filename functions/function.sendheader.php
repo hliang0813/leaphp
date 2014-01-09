@@ -1,4 +1,12 @@
 <?php
+/**
+ * 向瀏覽器發送http header頭
+ * 
+ * @author hliang
+ * @since 1.0.0
+ * 
+ * @param unknown $code
+ */
 function leap_function_sendheader($code) {
 	switch($code) {
 		case '404':

@@ -1,4 +1,13 @@
 <?php
+/**
+ * Redis緩存操作類
+ * 
+ * @author hliang
+ * @package leaphp
+ * @subpackage sysplugins
+ * @since 1.0.0
+ *
+ */
 class RedisClient {
 	static private $configure = array();
 	
@@ -131,6 +140,15 @@ class RedisClient {
 		'evaluateSha',
 	);
 	
+	/**
+	 * 構造函數，加載配置文件內容
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param string $config
+	 * @throws LeapException
+	 */
 	public function __construct($config = 'redis') {
 		$_class_redis_exists = class_exists('Redis');
 		if (!$_class_redis_exists) {
@@ -143,6 +161,15 @@ class RedisClient {
 		self::$configure = LeapConfigure::get($config);
 	}
 	
+	/**
+	 * 切換主從服務器的連接
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param unknown $method
+	 * @return Redis
+	 */
 	private function changeConnection($method) {
 		$logger = LeapLogger::getLogger('lpf_plugins::' . __METHOD__);
 		$logger->trace(leapJoin('选择主从连接。方法 -> ', $method));
@@ -185,6 +212,15 @@ class RedisClient {
 		}		
 	}
 	
+	/**
+	 * 魔術方法，自動調用php-redis類的對應方法
+	 * 
+	 * @author hliang
+	 * @since 1.0.0 
+	 * 
+	 * @param unknown $name
+	 * @param unknown $arguments
+	 */
 	public function __call($name, $arguments) {
 		$conn = self::changeConnection($name);
 		return call_user_func_array(array($conn, $name), $arguments);

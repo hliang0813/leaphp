@@ -1,7 +1,25 @@
 <?php
+/**
+ * 日誌記錄與處理類
+ * 
+ * @author hliang
+ * @package 
+ * @subpackage 
+ * @since 1.0.0
+ *
+ */
 class LeapLogger extends Logger {
 	static private $is_load_config = false;
 	
+	/**
+	 * 加載與合併配置文件
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param string $configuration
+	 * @param string $configurator
+	 */
 	public static function configure($configuration = null, $configurator = null) {
 		if (!self::$is_load_config) {
 			$default_config = array(
@@ -35,6 +53,14 @@ class LeapLogger extends Logger {
 		}
 	}
 
+	/**
+	 * 獲取LOGGER操作句柄
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param unknown $name
+	 * @return Ambigous <Logger, multitype:>
+	 */
 	public static function getLogger($name) {
 		self::configure(LeapConfigure::get('logger'), 'LoggerConfiguratorPhp');
 		return parent::getLogger($name);

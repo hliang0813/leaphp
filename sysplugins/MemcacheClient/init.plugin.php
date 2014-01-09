@@ -2,16 +2,22 @@
 require_once __DIR__ . '/Memcached.Class.php';
 
 /**
- * 类名：Cache
- * 描述：封闭的缓存操作类
+ * 從Memcached繼承封閉的Memcache協議緩存操作類
+ * 用於操作Memcache以及Kestrel
+ * 
  * @author hliang
- * @copyright Copyright (c) 2011- neusoft
- * @version 0.1
+ * @package leaphp 
+ * @subpackage sysplugins
+ * @since 1.0.0
+ *
  */
 class MemcacheClient extends Memcached {
 	/**
-	 * 函数名：__construct
-	 * 描述：构造函数
+	 * 構造函數，加載配置文件
+	 * 
+	 * @author hliang
+	 * @since 1.0.0 
+	 * 
 	 * @param string $config
 	 */
 	public function __construct($config = 'memcache') {

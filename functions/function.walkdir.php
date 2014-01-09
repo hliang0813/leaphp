@@ -3,6 +3,15 @@ define('LEAP_WALKDIR_ALL', 0);
 define('LEAP_WALKDIR_FOLDER', 1);
 define('LEAP_WALKDIR_FILE', 2);
 
+/**
+ * 保存遍歷結果的靜態類
+ * 
+ * @author hliang
+ * @package leaphp
+ * @subpackage functions
+ * @since 1.0.0
+ *
+ */
 class WalkDirData {
 	static private $dir_list = array();
 	static public function push($dir) {
@@ -17,7 +26,17 @@ class WalkDirData {
 	}
 }
 
-# 遍历目录及其子目录下全部文件
+/**
+ * 遞歸遍歷目錄及其子目錄下的全部文件
+ * 
+ * @author hliang
+ * @since 1.0.0
+ * 
+ * @param unknown $dirname
+ * @param unknown $with_folder
+ * @param number $max_level
+ * @return boolean|unknown
+ */
 function leap_function_walkdir($dirname, $with_folder, $max_level = 0){
 	if(!file_exists($dirname)){
 		return false;

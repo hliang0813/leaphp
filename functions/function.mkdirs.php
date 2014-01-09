@@ -1,4 +1,13 @@
 <?php
+/**
+ * 按層級創建目錄
+ * 
+ * @author hliang
+ * @since 1.0.0
+ * 
+ * @param unknown $dir
+ * @return boolean
+ */
 function leap_function_mkdirs($dir) {
 	if(!is_dir($dir)) {
 		if(!leap_function_mkdirs(dirname($dir))) {

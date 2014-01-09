@@ -1,5 +1,14 @@
 <?php
-# 复制目录及目录下全部内容
+/**
+ * 遞歸複製目錄及目錄下全部內容
+ * 
+ * @author hliang
+ * @since 1.0.0
+ * 
+ * @param unknown $sourceDir
+ * @param unknown $aimDir
+ * @return boolean
+ */
 function leap_function_copydirs($sourceDir,$aimDir){
 	$succeed = true;
 	if(!file_exists($aimDir)){

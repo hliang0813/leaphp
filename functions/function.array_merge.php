@@ -1,6 +1,13 @@
 <?php
 /**
- * 多维数组合并
+ * 對多維數組進行合併
+ * 
+ * @author hliang
+ * @since 1.0.0
+ * 
+ * @param unknown $array1
+ * @param unknown $array2
+ * @return unknown
  */
 function leap_function_array_merge ($array1, $array2) {
 	if (is_array($array2) && count($array2)) {

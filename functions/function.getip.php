@@ -1,4 +1,12 @@
 <?php
+/**
+ * 獲取客戶端IP地址
+ * 
+ * @author hliang
+ * @since 1.0.0 
+ * 
+ * @return unknown
+ */
 function leap_function_getip() {
 	static $realip;
 	if (isset($_SERVER)){
