@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * 框架中使用的异常类LeapException，从Exception类继承
  * 

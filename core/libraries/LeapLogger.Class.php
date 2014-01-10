@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * 日誌記錄與處理類
  * 

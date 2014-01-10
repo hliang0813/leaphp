@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * 控制器基类，从Base继承
  * 

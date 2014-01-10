@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * 路由分发器
  * 

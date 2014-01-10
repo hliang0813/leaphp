@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * UTF8字符串截取
  * 

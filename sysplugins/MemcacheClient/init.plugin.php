@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 require_once __DIR__ . '/Memcached.Class.php';
 
 /**

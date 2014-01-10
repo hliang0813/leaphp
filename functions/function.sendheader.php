@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * 向瀏覽器發送http header頭
  * 

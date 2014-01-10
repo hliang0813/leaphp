@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * 文件上传操作
  * 

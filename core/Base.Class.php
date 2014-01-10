@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * Base类是框架全部其它类的基类
  * 
@@ -24,6 +25,12 @@ class Base {
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	static public function checkEnv() {
+		if (!defined('LEAPHP_VERSION_ID_A')) {
+			die('不能在LeaPHP框架外部使用这个方法。');
 		}
 	}
 }

@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 require_once leapJoin(__DIR__, DS, 'Requests.php');
 
 /**

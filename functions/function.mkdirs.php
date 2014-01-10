@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * 按層級創建目錄
  * 

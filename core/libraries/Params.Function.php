@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * 封裝的$_GET超全局變量
  * 

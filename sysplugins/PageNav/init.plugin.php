@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * 数据库分页插件
  * 需要配合LeapDB数据库类使用

@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * 版权信息及技术支持及LOGO部分信息
  * 

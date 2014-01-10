@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * 對多維數組進行合併
  * 

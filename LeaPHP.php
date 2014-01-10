@@ -104,6 +104,13 @@ function leapJoin() {
 	return join(func_get_args());
 }
 
+// 检测框架插件及类库是否在框架外部使用
+function leapCheckEnv() {
+	if (!defined('LEAPHP_VERSION_ID')) {
+		throw new Exception('不能在框架外部使用LeaPHP的类库或插件。');
+	}
+}
+
 // 自动装载函数库
 function LeapFunction() {
 	$params = func_get_args();

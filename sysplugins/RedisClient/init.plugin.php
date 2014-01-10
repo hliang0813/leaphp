@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * Redis緩存操作類
  * 

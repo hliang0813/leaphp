@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * 定义了一个缓存对象会使用到的接口
  * 对缓存的定义，要求必须至少有setPrefix、set、get、delete四个方法

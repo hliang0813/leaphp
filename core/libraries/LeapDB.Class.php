@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * LeapDB数据库操作类，从原生PDO继承来
  * 

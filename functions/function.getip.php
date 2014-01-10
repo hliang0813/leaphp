@@ -1,4 +1,5 @@
 <?php
+leapCheckEnv();
 /**
  * 獲取客戶端IP地址
  * 

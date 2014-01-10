@@ -1,5 +1,5 @@
 <?php
-
+leapCheckEnv();
 /**
  * Assetic的自動裝載函數
  * 
