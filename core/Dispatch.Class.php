@@ -48,7 +48,7 @@ class Dispatch extends Base {
 			'params' => self::$params,
 		);
 		
-		$logger->trace('成功进行dispatch规则匹配。');
+		$logger->trace('成功进行dispatch规则匹配 -> ' . $callback);
 		
 		return (object)$route_info;
 	}
