@@ -12,7 +12,7 @@ require_once __DIR__ . '/Memcached.Class.php';
  * @since 1.0.0
  *
  */
-class MemcacheClient extends Memcached {
+class MemcachedClient extends Memcached {
 	/**
 	 * 構造函數，加載配置文件
 	 * 
