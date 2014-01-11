@@ -24,6 +24,36 @@ class Controller extends Base {
 	 * @throws LeapException
 	 */
 	public function __call($method, $params) {
+		self::_callMethod($method, $params);
+	}
+
+	/**
+	 * 静态调用controller基类加载的扩展功能包
+	 * 使用时，以定义的三个字母的前缀加下划线加原功能包方法名调用原方法
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param unknown $method
+	 * @param unknown $params
+	 * @throws LeapException
+	 */
+	static public function __callStatic($method, $params) {
+		self::_callMethod($method, $params);
+	}
+
+	/**
+	 * 调用controller基类加载的扩展功能包
+	 * 使用时，以定义的三个字母的前缀加下划线加原功能包方法名调用原方法
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param unknown $method
+	 * @param unknown $params
+	 * @throws LeapException
+	 */
+	private function _callMethod($method, $params) {
 		$logger = LeapLogger::getLogger('lpf_mainloop::' . __METHOD__);
 		$logger->trace('请求controller的扩展方法 -> ' . $method . '; 参数 -> ' . var_export($params, true));
 		
@@ -50,7 +80,6 @@ class Controller extends Base {
 		}
 	}
 	
-	
 
 	/**
 	 * 页面跳转，如未指定url参数，则跳转到当前页面的来源页面
@@ -60,7 +89,7 @@ class Controller extends Base {
 	 * 
 	 * @param string $url
 	 */
-	static protected function redirect($url = '') {
+	protected function redirect($url = '') {
 		$url = $url == '' ? filter_input(INPUT_SERVER, 'HTTP_REFERER') : $url;
 		$logger = LeapLogger::getLogger(__METHOD__);
 		$logger->trace(leapJoin('redirect_to:', $url));
