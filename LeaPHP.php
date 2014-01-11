@@ -86,7 +86,7 @@ function leapAutoload($class_name) {
 	$library_file = leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, $class_name, '.Class.php');
 	$sysplugin_file = leapJoin(SYSPLUGIN_DIR, DS, $class_name, DS, 'init.plugin.php');
 	$business_file = leapJoin(BUSINESS_DIR, DS, $class_name, '.Class.php');
-	
+
 	if (file_exists($library_file)) {
 		// 自动加载框架内部库
 		require_once $library_file;
