@@ -73,12 +73,13 @@ class App extends Base {
 		$dispatch_cache_key = leapJoin(APP_ABS_PATH, '_', _server('PATH_INFO'));
 		$logger->trace('返回App::run()并生成dispatcher的缓存key -> ' . $dispatch_cache_key);
 		
-		self::buildinDispatch();
-		
 		// 尝试从缓存中读取dispatch信息
 		$disp_res = LeapCache::get($dispatch_cache_key);
 		
 		if (!$disp_res) {
+			// 加載框架內部dispatch
+			self::buildinDispatch();
+
 			$logger->trace('缓存中不存在当前请求的pathinfo -> ' . _server('PATH_INFO'));
 			// 如果缓存读取失败，从dispatch文件中获取，并写入缓存
 			$disp_res = Dispatch::route();
