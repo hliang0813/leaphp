@@ -38,10 +38,6 @@ defined('SYSPLUGIN_DIR') or define('SYSPLUGIN_DIR', leapJoin(__DIR__, DS, 'syspl
 defined('CONTROLLER_DIR') or define('CONTROLLER_DIR', leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, 'controllers'));
 // 设置业务类目录
 defined('BUSINESS_DIR') or define('BUSINESS_DIR', leapJoin(APP_ABS_PATH, DS, 'business'));
-// 设置ORM对象目录
-// defined('ORM_DIR') or define('ORM_DIR', 'models');
-// 设置CACHE目录
-// defined('CACHE_DIR') or define('CACHE_DIR', 'caches');
 
 require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'log4php', DS, 'Logger.php');
 spl_autoload_register('leapAutoload');
