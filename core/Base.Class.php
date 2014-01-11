@@ -27,10 +27,4 @@ class Base {
 			return false;
 		}
 	}
-
-	static public function checkEnv() {
-		if (!defined('LEAPHP_VERSION_ID_A')) {
-			die('不能在LeaPHP框架外部使用这个方法。');
-		}
-	}
 }
