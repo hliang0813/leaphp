@@ -27,7 +27,7 @@ class LeapDB extends PDO {
 	 */
 	public function __construct($cfg_mode = 'master', $config = 'database') {
 		$logger = LeapLogger::getLogger('lpf_libraries::' . __METHOD__);
-		// 加载配置文件
+		/*// 加载配置文件
 		$this->driver = LeapConfigure::get($config)['driver'];
 		$this->configure = LeapConfigure::get($config)[$cfg_mode];
 		// 生成DSN字符串
@@ -37,10 +37,36 @@ class LeapDB extends PDO {
 				$this->configure['port'],
 				$this->configure['dbname'],
 				$this->configure['charset']);
-		$logger->trace('连接数据库的DSN -> ' . $_dsn);
+		$logger->trace('连接数据库的DSN -> ' . $_dsn);*/
+
+		$_connection = self::configure($cfg_mode, $config);
 
 		// 初始化父类
-		parent::__construct($_dsn, $this->configure['username'], $this->configure['password'], array(parent::ATTR_PERSISTENT => true));
+		parent::__construct($_connection['connection_string'], $_connection['username'], $_connection['password'], array(parent::ATTR_PERSISTENT => true));
+	}
+
+	static public function configure($cfg_mode = 'master', $config = 'database') {
+		$logger = LeapLogger::getLogger('lpf_libraries::' . __METHOD__);
+		// 加载配置文件
+		$_driver = LeapConfigure::get($config)['driver'];
+		$_configure = LeapConfigure::get($config)[$cfg_mode];
+		// 生成DSN字符串
+		$_dsn = sprintf('%s:host=%s;port=%d;dbname=%s;charset=%s',
+				$_driver,
+				$_configure['host'],
+				$_configure['port'],
+				$_configure['dbname'],
+				$_configure['charset']);
+		$logger->trace('连接数据库的DSN -> ' . $_dsn);
+
+		$connection = array(
+			'connection_string' => $_dsn,
+			'username' => $_configure['username'],
+			'password' => $_configure['password'],
+		);
+		$logger->trace('数据库配置项内容 -> ' . var_export($connection, true));
+
+		return $connection;
 	}
 	
 	/**
