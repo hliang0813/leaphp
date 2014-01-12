@@ -40,8 +40,19 @@ class ResourcePack extends Base {
 	 */
 	static private function pack($script) {
 		$_resources = array();
+		$_src_path = array(
+			'buildin' => leapJoin(SYSPLUGIN_DIR, DS, 'BuildInApp', DS),
+		);
 		foreach ((array)$script as $src) {
-			array_push($_resources, new FileAsset(leapJoin(APP_ABS_PATH, $src)));
+			$src_explode = explode(':', $src, 2);
+			if (count($src_explode) == 2) {
+				list($protocol, $src) = $src_explode;
+				if (array_key_exists($protocol, $_src_path)) {
+					array_push($_resources, new FileAsset(leapJoin($_src_path[$protocol], $src)));
+				}
+			} else {
+				array_push($_resources, new FileAsset(leapJoin(APP_ABS_PATH, $src)));
+			}
 		}
 		$js = new AssetCollection($_resources);
 		
