@@ -19,48 +19,59 @@ class Model {
 		$this->_object = ORM::for_table($this->_table)->use_id_column($this->primary_key);
 	}
 
+	public function obj() {
+		return $this->_object;
+	}
+
 	public function save(array $data) {
 		$_o = $this->_object->create();
-		foreach ($data as $key => $value) {
-			if (in_array($key, $this->_all_keys)) {
-				$_o->$key = $value;
-			}
-		}
+		$_o->set($data);
 		return $_o->save();
 	}
 
-	public function delete(array $data) {
+	public function delete($condition = NULL) {
 		$_o = $this->_object;
-		foreach ($data as $key => $block) {
-			list($condition, $value) = explode(':', $block, 2);
-			if (in_array($key, $this->_all_keys)) {
-				$_where = 'where_' . $condition;
-				$_o = $_o->$_where($key, $value);
+
+		if (is_array($condition)) {
+			// 传WHERE条件
+			foreach ($condition as $key => $block) {
+				list($_cond, $value) = explode(':', $block, 2);
+				if (in_array($key, $this->_all_keys)) {
+					$_where = 'where_' . $_cond;
+					$_o = $_o->$_where($key, $value);
+				}
 			}
+			return $_o->delete_many();
+		} else if (is_numeric($condition)) {
+			// 传主键ID
+			$_o = $_o->find_one($condition);
+			return $_o->delete();
+		} else {
+			throw new LeapException(LeapException::leapMsg(__METHOD__, '错误的删除条件。'));
 		}
-		return $_o->delete_many();
+	}
+
+	public function update(array $data, $condition = NULL) {
+		$_o = $this->_object;
 		
-	}
+		if (is_array($condition)) {
+			// 传WHERE条件
+			foreach ($condition as $key => $block) {
+				list($_cond, $value) = explode(':', $block, 2);
+				if (in_array($key, $this->_all_keys)) {
+					$_where = 'where_' . $_cond;
+					$_o = $_o->$_where($key, $value);
+				}
+			}
+			$_o = $_o->find_one();
+		} else if (is_numeric($condition)) {
+			// 传主键ID
+			$_o = $_o->find_one($condition);
+		} else {
+			throw new LeapException(LeapException::leapMsg(__METHOD__, '错误的查询条件。'));
+		}
 
-	public function update(array $data, array $cond) {
-		$_o = $this->_object;
-		foreach ($cond as $key => $block) {
-			list($condition, $value) = explode(':', $block, 2);
-			if (in_array($key, $this->_all_keys)) {
-				$_where = 'where_' . $condition;
-				$_o = $_o->$_where($key, $value);
-			}
-		}
-		$_o = $_o->find_one();
-		foreach ($data as $key => $value) {
-			if (in_array($key, $this->_all_keys)) {
-				$_o->$key = $value;
-			}
-		}
+		$_o->set($data);
 		return $_o->save();
-	}
-
-	public function fetch() {
-
 	}
 }
