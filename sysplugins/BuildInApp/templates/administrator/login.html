@@ -1,0 +1,22 @@
+<{extends file="`$smarty.const.BUILDINAPP_TPL_PATH`/global/root.html"}>
+
+<{block name="admin_title"}>用户登录<{/block}>
+
+<{block name="admin_body"}>
+<form method="POST" action="">
+	<table>
+		<tr>
+			<td>用户名：</td>
+			<td><input type="text" name="username" /></td>
+		</tr>
+		<tr>
+			<td>密　码：</td>
+			<td><input type="password" name="password" /></td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="submit" value="登录" />
+			<input type="reset" value="重置" /></td>
+		</tr>
+	</table>
+</form>
+<{/block}>

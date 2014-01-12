@@ -26,6 +26,7 @@ class LeapDB extends PDO {
 	 * @param string $cfg_mode
 	 */
 	public function __construct($cfg_mode = 'master', $config = 'database') {
+		$logger = LeapLogger::getLogger('lpf_libraries::' . __METHOD__);
 		// 加载配置文件
 		$this->driver = LeapConfigure::get($config)['driver'];
 		$this->configure = LeapConfigure::get($config)[$cfg_mode];
@@ -36,6 +37,8 @@ class LeapDB extends PDO {
 				$this->configure['port'],
 				$this->configure['dbname'],
 				$this->configure['charset']);
+		$logger->trace('连接数据库的DSN -> ' . $_dsn);
+
 		// 初始化父类
 		parent::__construct($_dsn, $this->configure['username'], $this->configure['password'], array(parent::ATTR_PERSISTENT => true));
 	}

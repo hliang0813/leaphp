@@ -1,0 +1,24 @@
+<{extends file="`$smarty.const.BUILDINAPP_TPL_PATH`/global/root.html"}>
+
+<{block name="admin_title"}>控制面板<{/block}>
+
+<{block name="admin_body"}>
+
+<div id="frame_top"></div>
+
+<div id="frame_menu">
+	<ul>
+		<li>用户管理</li>
+		<li>模块管理</li>
+		<li>...</li>
+		<li><a href="<{$smarty.const.ENTRY_URI}>/administrator/login/?act=logout" target="_self">注销登录</a></li>
+	</ul>
+</div>
+
+<div id="frame_left"></div>
+
+<div id="frame_right"></div>
+
+<div id="frame_foot"></div>
+
+<{/block}>
