@@ -75,6 +75,8 @@
             'return_result_sets' => false,
         );
 
+		protected static $_db_object = NULL;
+
         // Map of configuration settings
         protected static $_config = array();
 
@@ -246,7 +248,8 @@
                 !is_object(self::$_db[$connection_name])) {
                 self::_setup_db_config($connection_name);
 
-                $db = new PDO(
+                // 初始化數據庫對象，改爲直接從LeapDB初始化。
+				$db = new PDO(
                     self::$_config[$connection_name]['connection_string'],
                     self::$_config[$connection_name]['username'],
                     self::$_config[$connection_name]['password'],
