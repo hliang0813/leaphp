@@ -36,6 +36,8 @@ defined('CONFIG_DIR') or define('CONFIG_DIR', leapJoin(APP_ABS_PATH, DS, 'config
 defined('SYSPLUGIN_DIR') or define('SYSPLUGIN_DIR', leapJoin(__DIR__, DS, 'sysplugins'));
 // 设置控制器文件相对目录ACTION_DIR
 defined('CONTROLLER_DIR') or define('CONTROLLER_DIR', leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, 'controllers'));
+// 设置数据模型目录
+defined('MODEL_DIR') or define('MODEL_DIR', leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, 'models'));
 // 设置业务类目录
 defined('BUSINESS_DIR') or define('BUSINESS_DIR', leapJoin(APP_ABS_PATH, DS, 'business'));
 
@@ -80,17 +82,21 @@ $logger->trace('成功引入主框架必要文件。');
 
 // 自动装载类库
 function leapAutoload($class_name) {
+	$model_file = leapJoin(MODEL_DIR, DS, $class_name, '.Model.php');
 	$library_file = leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, $class_name, '.Class.php');
 	$sysplugin_file = leapJoin(SYSPLUGIN_DIR, DS, $class_name, DS, 'init.plugin.php');
 	$business_file = leapJoin(BUSINESS_DIR, DS, $class_name, '.Class.php');
 
-	if (file_exists($library_file)) {
+	if (file_exists($model_file)) {
+		// 自动加载数据模型类
+		require_once $model_file;
+	} else if (file_exists($library_file)) {
 		// 自动加载框架内部库
 		require_once $library_file;
-	} elseif (file_exists($sysplugin_file)) {
+	} else if (file_exists($sysplugin_file)) {
 		// 自动加载框架内部插件
 		require_once $sysplugin_file;
-	} elseif (file_exists($business_file)) {
+	} else if (file_exists($business_file)) {
 		// 自动加载业务类
 		require_once $business_file;
 	}
