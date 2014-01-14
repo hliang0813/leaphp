@@ -22,7 +22,7 @@ class LeapImport extends Base {
 		if (file_exists($biz_file)) {
 			require_once $biz_file;
 		} else {
-			throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到对应的业务类文件 ({$biz_name})。"));
+			throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到对应的业务类文件 [{$biz_name}]。"));
 		}
 	}
 	
@@ -39,7 +39,7 @@ class LeapImport extends Base {
 		if (file_exists($model_file)) {
 			require_once $model_file;
 		} else {
-			throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到对应的模型文件 ({$model_name})。"));
+			throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到对应的模型文件 [{$model_name}]。"));
 		}
 	}
 }
