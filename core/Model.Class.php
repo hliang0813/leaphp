@@ -9,7 +9,7 @@
  *
  */
 class Model {
-	protected $primary_key = 'id';
+	protected $id = 'id';
 	protected $keys = array();
 	
 	private $_table = NULL;
@@ -25,15 +25,15 @@ class Model {
 	 * @throws LeapException
 	 */
 	public function __construct() {
-		if (!$this->primary_key) {
+		if (!$this->id) {
 			throw new LeapException(LeapException::leapMsg(__METHOD__, '需要为数据模型指定一个主键。'));
 		}
 		if (!($this->keys)) {
 			throw new LeapException(LeapException::leapMsg(__METHOD__, '需要为数据模型指定字段列表。'));
 		}
 		$this->_table = get_class($this);
-		$this->_all_keys = array_merge($this->keys, (array)$this->primary_key);
-		$this->_object = ORM::for_table($this->_table)->use_id_column($this->primary_key);
+		$this->_all_keys = array_merge(array_keys($this->keys), (array)$this->id);
+		$this->_object = ORM::for_table($this->_table)->use_id_column($this->id);
 	}
 
 	/**
@@ -128,5 +128,55 @@ class Model {
 
 		$_o->set($data);
 		return $_o->save();
+	}
+	
+	/**
+	 * 自动在数据库中建表
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @param boolean $drop
+	 * @return boolean
+	 */
+	public function create($drop = NULL) {
+		// 是否事先删除已经存在的表
+		if ($drop) {
+			$_sql = "DROP TABLE IF EXISTS `{$this->_table}`;";
+		}
+		// 生成创建表的SQL语句
+		$_sql .= "CREATE TABLE IF NOT EXISTS `{$this->_table}` ( ";
+		$_statuement = array("`{$this->id}` int(11) NOT NULL AUTO_INCREMENT");
+		foreach ($this->keys as $_key => $_desc) {
+			$_block = explode(':', $_desc, 2);
+			if (count($_block) == 1) {
+				array_push($_statuement, "`{$_key}` {$_desc}");
+			} else if (count($_block) == 2) {
+				list($_type, $_size) = $_block;
+				array_push($_statuement, "`{$_key}` {$_type}({$_size})");
+			}
+		}
+		// 设置主键
+		array_push($_statuement, "PRIMARY KEY (`{$this->id}`)");
+		$_sql .= implode(',', $_statuement);
+		$_sql .= ');';
+		
+		// 执行SQL并返回结果
+		return ORM::get_db()->exec($_sql);
+	}
+	
+	/**
+	 * 自动删除数据库中已经存在的表
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @return boolean
+	 */
+	public function drop() {
+		// 删除表格的SQL语句
+		$_sql = "DROP TABLE IF EXISTS `{$this->_table}`;";
+		// 执行SQL并返回结果
+		return ORM::get_db()->exec($_sql);
 	}
 }
