@@ -35,6 +35,42 @@ class Model {
 		$this->_all_keys = array_merge(array_keys($this->keys), (array)$this->id);
 		$this->_object = ORM::for_table($this->_table)->use_id_column($this->id);
 	}
+	
+	/**
+	 * 取表名
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @throws LeapException
+	 */
+	public function table() {
+		return $this->_table;
+	}
+	
+	/**
+	 * 取主键名
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @throws LeapException
+	 */
+	public function id() {
+		return leapJoin($this->_table, '.', $this->id);
+	}
+	
+	/**
+	 * 取字段名
+	 * 
+	 * @author hliang
+	 * @since 1.0.0
+	 * 
+	 * @throws LeapException
+	 */
+	public function __get($key) {
+		return leapJoin($this->_table, '.', $key);
+	}
 
 	/**
 	 * 獲取ORM對象，高級操作時使用
@@ -148,13 +184,7 @@ class Model {
 		$_sql .= "CREATE TABLE IF NOT EXISTS `{$this->_table}` ( ";
 		$_statuement = array("`{$this->id}` int(11) NOT NULL AUTO_INCREMENT");
 		foreach ($this->keys as $_key => $_desc) {
-			$_block = explode(':', $_desc, 2);
-			if (count($_block) == 1) {
-				array_push($_statuement, "`{$_key}` {$_desc}");
-			} else if (count($_block) == 2) {
-				list($_type, $_size) = $_block;
-				array_push($_statuement, "`{$_key}` {$_type}({$_size})");
-			}
+			array_push($_statuement, "`{$_key}` {$_desc}");
 		}
 		// 设置主键
 		array_push($_statuement, "PRIMARY KEY (`{$this->id}`)");
