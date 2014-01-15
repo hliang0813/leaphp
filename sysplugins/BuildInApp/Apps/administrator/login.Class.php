@@ -27,7 +27,6 @@ class login extends Controller {
 		} else {
 			self::loginPage();
 		}
-
 	}
 
 	// 登录页面
