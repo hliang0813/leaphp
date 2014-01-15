@@ -89,7 +89,7 @@ class Controller extends Base {
 	 * 
 	 * @param string $url
 	 */
-	protected function redirect($url = '') {
+	public function redirect($url = '') {
 		$url = $url == '' ? filter_input(INPUT_SERVER, 'HTTP_REFERER') : $url;
 		$logger = LeapLogger::getLogger(__METHOD__);
 		$logger->trace(leapJoin('redirect_to:', $url));
