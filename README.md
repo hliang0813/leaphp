@@ -15,7 +15,8 @@
 
 - LeaPHP只支持PHP5.4.0及以上版本，并支持最新的PHP5.5；
 - LeaPHP的运行需要APC模块，请自行前往PECL进行下载安装；
-- 使用到数据库连接时（MySQL、SQLite、PostgreSQL、Oracle），需要PDO支持。
+- 使用到数据库连接时（MySQL、SQLite、PostgreSQL、Oracle），需要[PDO](http://php.net/pdo)支持；
+- 使用到RedisClient插件时，需要[phpredis](https://github.com/nicolasff/phpredis/)支持。
 
 ## TODO ##
 
