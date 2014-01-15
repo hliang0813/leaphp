@@ -31,7 +31,7 @@ define('APP_ABS_PATH', dirname(filter_input(INPUT_SERVER, 'SCRIPT_FILENAME')));
 
 defined('CONFIGURE') or define('CONFIGURE', leapJoin(APP_ABS_PATH, DS, 'configs', DS, 'config.ini.php'));
 // 设置配置文件相对目录CONFIG_DIR
-defined('CONFIG_DIR') or define('CONFIG_DIR', leapJoin(APP_ABS_PATH, DS, 'configs'));
+// defined('CONFIG_DIR') or define('CONFIG_DIR', leapJoin(APP_ABS_PATH, DS, 'configs'));
 // 设置框架系统插件目录
 defined('SYSPLUGIN_DIR') or define('SYSPLUGIN_DIR', leapJoin(__DIR__, DS, 'sysplugins'));
 // 设置控制器文件相对目录ACTION_DIR
