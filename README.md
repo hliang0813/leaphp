@@ -1,6 +1,6 @@
 # LeaPHP Framework  #
 
-　　当前最新版本 `v1.0.0(alpha)`。。
+　　当前最新版本 `v1.0.0(alpha)`。
 
 ## Description ##
 
