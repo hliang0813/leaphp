@@ -49,22 +49,31 @@ class Model {
 	}
 	
 	/**
+	 * 取主键字段名
+	 *
+	 * @author hliang
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	public function id() {
+		return leapJoin($this->_table, '.', $this->id);
+	}
+	
+	/**
 	 * 取字段名
 	 * 
 	 * @author hliang
 	 * @since 1.0.0
 	 * 
+	 * @return string
 	 * @throws LeapException
 	 */
 	public function __get($key) {
-		if ($key == 'id') {
-			return leapJoin($this->_table, '.', $this->id);
+		if (in_array($key, $this->_all_keys)) {
+			return leapJoin($this->_table, '.', $key);
 		} else {
-			if (in_array($key, $this->_all_keys)) {
-				return leapJoin($this->_table, '.', $key);
-			} else {
-				throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到字段名 [{$key}]。"));
-			}
+			throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到字段名 [{$key}]。"));
 		}
 	}
 
