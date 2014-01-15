@@ -49,18 +49,6 @@ class Model {
 	}
 	
 	/**
-	 * 取主键名
-	 * 
-	 * @author hliang
-	 * @since 1.0.0
-	 * 
-	 * @throws LeapException
-	 */
-	public function id() {
-		return leapJoin($this->_table, '.', $this->id);
-	}
-	
-	/**
 	 * 取字段名
 	 * 
 	 * @author hliang
@@ -69,7 +57,15 @@ class Model {
 	 * @throws LeapException
 	 */
 	public function __get($key) {
-		return leapJoin($this->_table, '.', $key);
+		if ($key == 'id') {
+			return leapJoin($this->_table, '.', $this->id);
+		} else {
+			if (in_array($key, $this->_all_keys)) {
+				return leapJoin($this->_table, '.', $key);
+			} else {
+				throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到字段名 [{$key}]。"));
+			}
+		}
 	}
 
 	/**
