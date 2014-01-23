@@ -28,6 +28,16 @@ class Base {
 		}
 	}
 	
+	/**
+	 * 统一方法的返回值
+	 *
+	 * @author hliang
+	 * @since 1.0.0
+	 *
+	 * @param unknown $result
+	 * @param unknown $error
+	 * @return object
+	 */
 	static public function response($result, $error = NULL) {
 		return (object)array(
 				'error' => $error,

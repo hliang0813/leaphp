@@ -142,10 +142,10 @@ class App extends Base {
 	}
 	
 	static public function getController() {
-		return self::$controller;
+		return Base::response(self::$controller);
 	}
 	
 	static public function getAction() {
-		return self::$action;
+		return Base::response(self::$action);
 	}
 }
