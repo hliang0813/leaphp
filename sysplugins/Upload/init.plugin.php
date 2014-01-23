@@ -71,25 +71,25 @@ class Upload {
 			throw new LeapException(LeapException::leapMsg(__METHOD__, "未找到指定的文件域名称 [{$field_name}]。"));
 		}
 		
-		$this->_limit = $this->_finalLimit();
+		$this->_limit = $this->_finalLimit()->result;
 		$this->_upfile_info = (object)array_merge($this->_field, pathinfo($this->_field['name']));
 		
 		// 处理上传错误
 		$_up_error = $this->handleUploadError();
 		if ($_up_error !== true) {
-			return Base::response($_up_error, true);
+			return Base::response($_up_error, '001');
 		}
 		
 		// 判断上传文件扩展名及mimetype
 		$_type_error = $this->handleFileExtensionMimeValidate();
 		if ($_type_error !== true) {
-			return Base::response($_type_error, true);
+			return Base::response($_type_error, '002');
 		}
 		
 		// 判断上传文件尺寸
 		$_size_error = $this->handleFileMaxSizeValidate();
 		if ($_size_error !== true) {
-			return Base::response($_size_error, true);
+			return Base::response($_size_error, '003');
 		}
 				
 		if (is_uploaded_file($this->_upfile_info->tmp_name)) {
@@ -109,10 +109,10 @@ class Upload {
 				);
 				return Base::response((object)$_uploaded);
 			} else {
-				return Base::response('服务器转移文件时发生异常。', true);
+				return Base::response('服务器转移文件时发生异常。', '004');
 			}
 		} else {
-			return Base::response('服务器保存文件时发生异常。', true);
+			return Base::response('服务器保存文件时发生异常。', '005');
 		}
 	}
 	
@@ -129,7 +129,7 @@ class Upload {
 		$_limit['extension'] = strlen($_extension) == 0 ? array() : explode(',', strtolower($_extension));
 		$_limit['maxsize'] = intval($_limit['maxsize']);
 		
-		return (object)$_limit;
+		return Base::response((object)$_limit);
 	}
 
 	/**
