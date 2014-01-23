@@ -9,37 +9,26 @@ leapCheckEnv();
  * @since 1.0.0
  *
  */
-class Upload extends Base {
-	// 配置KEY
-	static private $config_key = 'upload';
-	// 上传文件的配置项目
-	static private $upload_configure = array();
-	// 初始化文件域名称
-	static private $upload_field_name;
-	// 上传的文件属性
-	static private $upload_file = array();
-	// 上传目标文件名称及目录
-	static private $dest_file_name;
-	static private $dest_file_path;
-	// 上传目标文件访问URI
-	static private $dest_file_uri;
-	// 目标文件属性
-	static private $dest_file;
-
-	// 上传文件限制
-	static private $upload_limit = array();
-
-	// 设置配置KEY
-	/**
-	 * 指定配置文件中的配置项key
-	 * 
-	 * @author hliang
-	 * @since 1.0.0
-	 * 
-	 * @param string $key
-	 */
-	static public function setConfigKey($key = NULL) {
-		self::$config_key = $key;
+class Upload {
+	private $configure = array();
+	private $_config;
+	private $_field;
+	private $_upfile_info;
+	private $key_save_path = 'save_path';
+	private $key_visit_path = 'visit_path';
+	
+	private $_limit = array();
+	
+	private $_convert = 1024;
+	
+	
+	public function __construct($key = NULL) {
+		$key = !isset($key) ? 'upload' : $key;
+		$this->configure = LeapConfigure::get($key);
+		if (!array_key_exists($this->key_save_path, $this->configure) || !array_key_exists($this->key_visit_path, $this->configure)) {
+			throw new LeapException(LeapException::leapMsg(__METHOD__, "上传文件插件的配置文件错误 [{$key}]"));
+		}
+// 		$this->configure = (object)$this->configure;
 	}
 
 	/**
@@ -52,10 +41,11 @@ class Upload extends Base {
 	 * 
 	 * @param array $limit
 	 */
-	static public function setLimit(array $limit = array()) {
-		if ($limit) {
-			self::$upload_limit = $limit;
+	public function limit($limit = array()) {
+		if (!is_array($limit)) {
+			throw new LeapException(LeapException::leapMsg(__METHOD__, '上传文件的限制参数不是数组。'));
 		}
+		$this->_limit = $limit;
 	}
 
 	/**
@@ -69,72 +59,76 @@ class Upload extends Base {
 	 * @param string $rename
 	 * @return multitype:number string 
 	 */
-	static public function send($field_name = NULL, $sub_folder = '', $rename = '') {
-		// 初始化配置项目
-		if (!array_key_exists('server_path', (array)$GLOBALS['config'][self::$config_key]) || !array_key_exists('uri_path', (array)$GLOBALS['config'][self::$config_key])) {
-			die('使用上传文件模块，需要在配置文件中对其做相应的配置。');
+	public function send($field_name = NULL, $sub_folder = '', $rename = '') {
+		if (isset($field_name)) {
+			$this->_field = $_FILES[$field_name];
+		} else {
+			throw new LeapException(LeapException::leapMsg(__METHOD__, '请指定上传文件域的名称。'));
 		}
-		// 初始化文件域名称
-		self::$upload_field_name = $field_name;
-		// 初始化上传文件属性
-		self::$upload_file = _files(self::$upload_field_name);
-		// 初始化上传目标文件名称及路径
-		$dest_file_name = ($rename ? urlencode($rename) : time()) . '.' . pathinfo(self::$upload_file['name'])['extension'];
-		self::$dest_file_path = APP_ABS_PATH . $GLOBALS['config'][self::$config_key]['server_path'] . $sub_folder . DS . $dest_file_name;
-		// 初始化上传目标文件访问URI
-		self::$dest_file_uri = PATH . $GLOBALS['config'][self::$config_key]['uri_path'] . $sub_folder . '/' . $dest_file_name;
-		// 初始化上传目标文件属性
-		self::$dest_file = pathinfo(self::$dest_file_uri);
-
+		
+		if (!array_key_exists($field_name, $_FILES)) {
+			throw new LeapException(LeapException::leapMsg(__METHOD__, "未找到指定的文件域名称 [{$field_name}]。"));
+		}
+		
+		$this->_limit = $this->_finalLimit();
+		$this->_upfile_info = (object)array_merge($this->_field, pathinfo($this->_field['name']));
+		
 		// 处理上传错误
-		$upload_err = self::handleUploadError();
-		if ($upload_err !== true) {
-			return self::output($upload_err, -6);
+		$_up_error = $this->handleUploadError();
+		if ($_up_error !== true) {
+			return $this->output($_up_error, -6);
 		}
-
+		
+		// 判断上传文件扩展名及mimetype
+		$_type_error = $this->handleFileExtensionMimeValidate();
+		if ($_type_error !== true) {
+			return $this->output($_type_error, 0);
+		}
+		
 		// 判断上传文件尺寸
-		$filesize_kb = intval(self::$upload_file['size'] / 1000);
-		if (!self::checkFileMaxsize($filesize_kb)) {
-			return self::output('上传失败，文件的大小超过限制' . self::$upload_limit['maxsize'] . 'KB', -4);
+		$_size_error = $this->handleFileMaxSizeValidate();
+		if ($_size_error !== true) {
+			return $this->output($_size_error, 0);
 		}
-
-		// 判断上传文件类型
-		if (!self::checkFileMimetype(self::$dest_file['extension'])) {
-			return self::output('上传失败，不允许上传扩展名为' . self::$dest_file['extension'] . '的附件', -5);
-		}
-
-		// 开始上传文件
-		if (self::$upload_file['error'] == 0) {
-			// 判断文件是否上传成功
-			if (is_uploaded_file(self::$upload_file['tmp_name'])) {
-
-				// 自动生成上传子文件夹
-				$upload_abs_path = dirname(self::$dest_file_path);
-				if (!file_exists($upload_abs_path)) {
-					LeapFunction('mkdirs', $upload_abs_path);
-				}
-
-				// 移动上传文件到目标目录
-				if (move_uploaded_file(self::$upload_file['tmp_name'], self::$dest_file_path)) {
-					// 设置返回数组
-					list($width, $height) = getimagesize(self::$dest_file_path);
-					$uploaded = array(
-						'path' => self::$dest_file_path,
-						'uri' => self::$dest_file_uri,
-						'width' => $width ? $width : 0,
-						'height' => $height ? $height : 0,
-						'size' => $filesize_kb,
-					);
-					return self::output($uploaded);
-				} else {
-					return self::output('文件转移到目标目录失败', -1);
-				}
+				
+		if (is_uploaded_file($this->_upfile_info->tmp_name)) {
+			$_dst_dir = trim($sub_folder) == '' ? $this->configure[$this->key_save_path] : leapJoin($this->configure[$this->key_save_path], DS, $sub_folder);
+			if (!file_exists($_dst_dir)) {
+				LeapFunction('mkdirs', $_dst_dir);
+			}
+			
+			$_dst_filename = trim($rename) == '' ? uniqid() : $rename;
+			$_dst_full = leapJoin($_dst_dir, DS, $_dst_filename, '.', $this->_upfile_info->extension);
+			if (move_uploaded_file($this->_upfile_info->tmp_name, $_dst_full)) {
+								
+				$_uploaded = array(
+					'realpath' => realpath($_dst_full),
+					'url' => leapJoin($this->configure[$this->key_visit_path], '/', $sub_folder, '/', pathinfo($_dst_full)['basename']),
+					'size' => ceil($this->_upfile_info->size / $this->_convert),
+				);
+				return (object)$_uploaded;
 			} else {
-				return self::output('文件上传失败', -2);
+				return self::output('服务器转移文件时发生异常。', 0);
 			}
 		} else {
-			return self::output('文件上传过程中出现错误', -3);
+			return self::output('服务器保存文件时发生异常。', -2);
 		}
+	}
+	
+	private function _finalLimit() {
+		$default = array(
+			'extension' => '',
+			'maxsize' => 0,
+		);
+		
+		$_limit = array_merge($default, $this->_limit);
+		
+		$_extension = str_replace(' ', '', $_limit['extension']);
+		
+		$_limit['extension'] = strlen($_extension) == 0 ? array() : explode(',', strtolower($_extension));
+		$_limit['maxsize'] = intval($_limit['maxsize']);
+		
+		return (object)$_limit;
 	}
 
 	/**
@@ -147,7 +141,7 @@ class Upload extends Base {
 	 * @param number $err
 	 * @return multitype:number string 
 	 */
-	static private function output($data = '', $err = 0) {
+	private function output($data = '', $err = true) {
 		return array(
 			'err' => $err,
 			'data' => $data,
@@ -162,8 +156,8 @@ class Upload extends Base {
 	 * 
 	 * @return string|boolean
 	 */
-	static private function handleUploadError() {
-		switch (self::$upload_file['error']) {
+	private function handleUploadError() {
+		switch ($this->_upfile_info->error) {
 			case "1":
 				return "文件大小超过服务器限制";
 				break;
@@ -179,52 +173,28 @@ class Upload extends Base {
 		}
 		return true;
 	}
-
-
-	/**
-	 * 判断文件大小
-	 * 
-	 * @author hliang
-	 * @since 1.0.0
-	 * 
-	 * @param unknown $filesize
-	 * @return boolean
-	 */
-	static private function checkFileMaxsize($filesize) {
-		if (self::$upload_limit['maxsize']) {
-			if (intval($filesize) < intval(self::$upload_limit['maxsize'])) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return true;
+	
+	private function handleFileExtensionMimeValidate() {
+		$_extension = strtolower($this->_upfile_info->extension);
+		if (!in_array($_extension, $this->_limit->extension)) {
+			return "上传文件的扩展名不正确 [{$_extension}]。";
 		}
+		
+		if (!in_array($this->_upfile_info->type, $this->checkMimeType($this->_limit->extension))) {
+			return "上传文件的MimeType与其扩展名不对应 [{$this->_upfile_info->type}]。";
+		}
+		
+		return true;
+	}
+	
+	private function handleFileMaxSizeValidate() {
+		if ($this->_limit->maxsize < ($this->_upfile_info->size / $this->_convert)) {
+			return "上传文件的大小超过了服务器限制 [{$this->_limit->maxsize}KB]。";
+		}
+		
+		return true;
 	}
 
-
-	/**
-	 * 判断文件类型
-	 * 
-	 * @author hliang
-	 * @since 1.0.0
-	 * 
-	 * @param string $extension
-	 * @return boolean
-	 */
-	static private function checkFileMimetype($extension) {
-		if (self::$upload_limit['extension']) {
-			$extension_limits = explode(',', self::$upload_limit['extension']);
-			$mimetypes = self::checkMimeType((array)$extension_limits);
-			if (in_array(strtolower(self::$upload_file['type']), $mimetypes)) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return true;
-		}
-	}
 
 	/**
 	 * 检查文件的MIMETYPE
@@ -235,7 +205,7 @@ class Upload extends Base {
 	 * @param unknown $extensions
 	 * @return multitype:string 
 	 */
-	static private function checkMimeType($extensions) {
+	private function checkMimeType($extensions) {
 		$mimetype = array(
 			'323'   => array('text/h323'),
 			'7z'    => array('application/x-7z-compressed'),

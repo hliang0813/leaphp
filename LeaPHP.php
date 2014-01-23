@@ -41,6 +41,7 @@ defined('MODEL_DIR') or define('MODEL_DIR', leapJoin(APP_ABS_PATH, DS, APP_NAME,
 // 设置业务类目录
 defined('BUSINESS_DIR') or define('BUSINESS_DIR', leapJoin(APP_ABS_PATH, DS, 'business'));
 
+// 引入日志模块文件
 require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'log4php', DS, 'Logger.php');
 spl_autoload_register('leapAutoload');
 set_exception_handler('leapException');
