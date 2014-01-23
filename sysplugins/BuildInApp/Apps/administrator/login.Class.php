@@ -45,9 +45,11 @@ class login extends Controller {
 			ORM::get_db()->beginTransaction();
 			
 			$login_result = $user->obj()->where_equal('u_name', $username)->where_equal('u_pass', md5($password))->find_one();
-			$upd_result = $user->update(array(
-					'u_lasttime' => mktime(),
-			), $login_result->id());
+// 			$upd_result = $user->update(array(
+// 					'u_lasttime' => mktime(),
+// 			), $login_result->id());
+
+			var_dump($login_result);
 			
 			
 // 			// 初始化数据库对象
