@@ -28,7 +28,6 @@ class Upload {
 		if (!array_key_exists($this->key_save_path, $this->configure) || !array_key_exists($this->key_visit_path, $this->configure)) {
 			throw new LeapException(LeapException::leapMsg(__METHOD__, "上传文件插件的配置文件错误 [{$key}]"));
 		}
-// 		$this->configure = (object)$this->configure;
 	}
 
 	/**
@@ -76,19 +75,19 @@ class Upload {
 		// 处理上传错误
 		$_up_error = $this->handleUploadError();
 		if ($_up_error !== true) {
-			return $this->output($_up_error, -6);
+			return Base::response($_up_error, true);
 		}
 		
 		// 判断上传文件扩展名及mimetype
 		$_type_error = $this->handleFileExtensionMimeValidate();
 		if ($_type_error !== true) {
-			return $this->output($_type_error, 0);
+			return Base::response($_type_error, true);
 		}
 		
 		// 判断上传文件尺寸
 		$_size_error = $this->handleFileMaxSizeValidate();
 		if ($_size_error !== true) {
-			return $this->output($_size_error, 0);
+			return Base::response($_size_error, true);
 		}
 				
 		if (is_uploaded_file($this->_upfile_info->tmp_name)) {
@@ -106,12 +105,12 @@ class Upload {
 					'url' => leapJoin($this->configure[$this->key_visit_path], '/', $sub_folder, '/', pathinfo($_dst_full)['basename']),
 					'size' => ceil($this->_upfile_info->size / $this->_convert),
 				);
-				return (object)$_uploaded;
+				return Base::response((object)$_uploaded);
 			} else {
-				return self::output('服务器转移文件时发生异常。', 0);
+				return Base::response('服务器转移文件时发生异常。', true);
 			}
 		} else {
-			return self::output('服务器保存文件时发生异常。', -2);
+			return Base::response('服务器保存文件时发生异常。', true);
 		}
 	}
 	
@@ -129,23 +128,6 @@ class Upload {
 		$_limit['maxsize'] = intval($_limit['maxsize']);
 		
 		return (object)$_limit;
-	}
-
-	/**
-	 * 设置结果返回值格式
-	 * 
-	 * @author hliang
-	 * @since 1.0.0
-	 * 
-	 * @param string $data
-	 * @param number $err
-	 * @return multitype:number string 
-	 */
-	private function output($data = '', $err = true) {
-		return array(
-			'err' => $err,
-			'data' => $data,
-		);
 	}
 
 	/**
