@@ -45,6 +45,8 @@ class Upload {
 			throw new LeapException(LeapException::leapMsg(__METHOD__, '上传文件的限制参数不是数组。'));
 		}
 		$this->_limit = $limit;
+		
+		return Base::response('');
 	}
 
 	/**
