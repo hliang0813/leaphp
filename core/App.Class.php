@@ -49,7 +49,7 @@ class App extends Base {
 		$logger = LeapLogger::getLogger('lpf_mainloop::' . __METHOD__);
 		$logger->trace('开始设置框架内部dispatcher。');
 		// 打包javascript资源
-		Dispatch::append('GET', '/^\/buildin\/resource.js$/', 'ResourcePack::webInterface');
+		Dispatch::append('GET', '/buildin/resource.js', 'ResourcePack::webInterface');
 		$logger->trace('成功设置框架内部dispatcher。');
 	}
 

@@ -79,7 +79,7 @@ class Dispatch extends Base {
 		$logger->trace(leapJoin('请求方法 -> ', json_encode($method), '; 路径规则 -> ', $path, '; 回调方法 -> ', $callback));
 		
 		array_push(self::$routers, array(
-			(array)$method, $path, $callback,
+			(array)$method, '`^' . $path . '$`', $callback,
 		));
 	}
 	
