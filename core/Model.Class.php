@@ -60,6 +60,14 @@ class Model {
 		return leapJoin($this->_table, '.', $this->id);
 	}
 	
+	public function __get($key) {
+		if ($key == 'queryString') {
+			return ORM::get_last_statement()->$key;
+		} else {
+			throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到对象名 [{$key}]。"));
+		}
+	}
+	
 	/**
 	 * 取字段名
 	 * 
@@ -69,14 +77,6 @@ class Model {
 	 * @return string
 	 * @throws LeapException
 	 */
-	public function __get($key) {
-		if (in_array($key, $this->_all_keys)) {
-			return leapJoin($this->_table, '.', $key);
-		} else {
-			throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到字段名 [{$key}]。"));
-		}
-	}
-	
 	public function __call($key, $params) {
 		if (in_array($key, $this->_all_keys)) {
 			return leapJoin($this->_table, '.', $key);
