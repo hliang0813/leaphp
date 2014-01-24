@@ -56,7 +56,7 @@ class Model {
 	 *
 	 * @return string
 	 */
-	public function id() {
+	public function id_column_name() {
 		return leapJoin($this->_table, '.', $this->id);
 	}
 	
@@ -70,6 +70,14 @@ class Model {
 	 * @throws LeapException
 	 */
 	public function __get($key) {
+		if (in_array($key, $this->_all_keys)) {
+			return leapJoin($this->_table, '.', $key);
+		} else {
+			throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到字段名 [{$key}]。"));
+		}
+	}
+	
+	public function __call($key, $params) {
 		if (in_array($key, $this->_all_keys)) {
 			return leapJoin($this->_table, '.', $key);
 		} else {
