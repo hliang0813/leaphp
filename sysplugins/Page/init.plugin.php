@@ -18,7 +18,7 @@ class Page {
 		return $this;
 	}
 	
-	public function p($limit = 10, $pid = 1) {
+	public function page($pid = 1, $limit = 10) {
 		$this->_record_limit = abs(intval($limit));
 		$this->_record_seek = ($pid - 1) * $this->_record_limit;
 		
@@ -29,6 +29,7 @@ class Page {
 				'total_record' => $_total_record,
 				'total_page' => ceil($_total_record/$this->_record_limit),
 				'current_page' => $pid,
+				'page_record' => abs(intval($limit)),
 			),
 			'data' => $this->getList($pid)->result,
 		);

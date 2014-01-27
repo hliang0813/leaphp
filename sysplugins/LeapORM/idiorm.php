@@ -228,7 +228,7 @@
          * Despite its slightly odd name, this is actually the factory
          * method used to acquire instances of the class. It is named
          * this way for the sake of a readable interface, ie
-         * ORM::for_table('table_name')->find_one()-> etc. As such,
+         * self::for_table('table_name')->find_one()-> etc. As such,
          * this will normally be the first method called in a chain.
          * @param string $table_name
          * @param string $connection_name Which connection to use
@@ -296,7 +296,7 @@
         /**
          * Detect and initialise the character used to quote identifiers
          * (table names, column names etc). If this has been specified
-         * manually using ORM::configure('identifier_quote_character', 'some-char'),
+         * manually using self::configure('identifier_quote_character', 'some-char'),
          * this will do nothing.
          * @param string $connection_name Which connection to use
          */
@@ -310,7 +310,7 @@
         /**
          * Detect and initialise the limit clause style ("SELECT TOP 5" /
          * "... LIMIT 5"). If this has been specified manually using 
-         * ORM::configure('limit_clause_style', 'top'), this will do nothing.
+         * self::configure('limit_clause_style', 'top'), this will do nothing.
          * @param string $connection_name Which connection to use
          */
         public static function _setup_limit_clause_style($connection_name) {
@@ -354,9 +354,9 @@
                 case 'sqlsrv':
                 case 'dblib':
                 case 'mssql':
-                    return ORM::LIMIT_STYLE_TOP_N;
+                    return self::LIMIT_STYLE_TOP_N;
                 default:
-                    return ORM::LIMIT_STYLE_LIMIT;
+                    return self::LIMIT_STYLE_LIMIT;
             }
         }
 
@@ -518,7 +518,7 @@
 
         /**
          * "Private" constructor; shouldn't be called directly.
-         * Use the ORM::for_table factory method instead.
+         * Use the self::for_table factory method instead.
          */
         protected function __construct($table_name, $data = array(), $connection_name = self::DEFAULT_CONNECTION) {
             $this->_table_name = $table_name;
@@ -1375,7 +1375,7 @@
             $result_columns = join(', ', $this->_result_columns);
 
             if (!is_null($this->_limit) &&
-                self::$_config[$this->_connection_name]['limit_clause_style'] === ORM::LIMIT_STYLE_TOP_N) {
+                self::$_config[$this->_connection_name]['limit_clause_style'] === self::LIMIT_STYLE_TOP_N) {
                 $fragment .= "TOP {$this->_limit} ";
             }
 
@@ -1463,7 +1463,7 @@
         protected function _build_limit() {
             $fragment = '';
             if (!is_null($this->_limit) &&
-                self::$_config[$this->_connection_name]['limit_clause_style'] == ORM::LIMIT_STYLE_LIMIT) {
+                self::$_config[$this->_connection_name]['limit_clause_style'] == self::LIMIT_STYLE_LIMIT) {
                 if (self::$_db[$this->_connection_name]->getAttribute(PDO::ATTR_DRIVER_NAME) == 'firebird') {
                     $fragment = 'ROWS';
                 } else {
@@ -2127,7 +2127,7 @@
          * Call a method on all models in a result set. This allows for method
          * chaining such as setting a property on all models in a result set or
          * any other batch operation across models.
-         * @example ORM::for_table('Widget')->find_many()->set('field', 'value')->save();
+         * @example self::for_table('Widget')->find_many()->set('field', 'value')->save();
          * @param string $method
          * @param array $params
          * @return \IdiormResultSet

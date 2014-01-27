@@ -33,7 +33,7 @@ class Model {
 		}
 		$this->_table = get_class($this);
 		$this->_all_keys = array_merge(array_keys($this->keys), (array)$this->id);
-		$this->_object = ORM::for_table($this->_table)->use_id_column($this->id);
+		$this->_object = LeapORM::for_table($this->_table)->use_id_column($this->id);
 	}
 	
 	/**
@@ -62,7 +62,7 @@ class Model {
 	
 	public function __get($key) {
 		if ($key == 'queryString') {
-			return ORM::get_last_statement()->$key;
+			return LeapORM::get_last_statement()->$key;
 		} else {
 			throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到对象名 [{$key}]。"));
 		}
@@ -205,7 +205,7 @@ class Model {
 		$_sql .= ');';
 		
 		// 执行SQL并返回结果
-		return ORM::get_db()->exec($_sql);
+		return LeapORM::get_db()->exec($_sql);
 	}
 	
 	/**
@@ -220,6 +220,6 @@ class Model {
 		// 删除表格的SQL语句
 		$_sql = "DROP TABLE IF EXISTS `{$this->_table}`;";
 		// 执行SQL并返回结果
-		return ORM::get_db()->exec($_sql);
+		return LeapORM::get_db()->exec($_sql);
 	}
 }
