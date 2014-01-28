@@ -11,6 +11,7 @@
 class Model {
 	protected $id = 'id';
 	protected $keys = array();
+	protected $join_key = '';
 	
 	private $_table = NULL;
 	private $_all_keys = array();
@@ -36,6 +37,31 @@ class Model {
 		$this->_object = LeapORM::for_table($this->_table)->use_id_column($this->id);
 	}
 	
+	public function __get($key) {
+		if ($key == 'queryString') {
+			return LeapORM::get_last_statement()->$key;
+		} else {
+			throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到对象名 [{$key}]。"));
+		}
+	}
+	
+	/**
+	 * 取字段名
+	 *
+	 * @author hliang
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 * @throws LeapException
+	 */
+	public function __call($key, $params) {
+		if (in_array($key, $this->_all_keys)) {
+			return leapJoin($this->_table, '.', $key);
+		} else {
+			throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到字段名 [{$key}]。"));
+		}
+	}
+	
 	/**
 	 * 取表名
 	 * 
@@ -46,6 +72,18 @@ class Model {
 	 */
 	public function table() {
 		return $this->_table;
+	}
+	
+	/**
+	 * 獲取ORM對象，高級操作時使用
+	 *
+	 * @author hliang
+	 * @since 1.0.0
+	 *
+	 * @return ORM
+	 */
+	public function obj() {
+		return $this->_object;
 	}
 	
 	/**
@@ -60,42 +98,17 @@ class Model {
 		return leapJoin($this->_table, '.', $this->id);
 	}
 	
-	public function __get($key) {
-		if ($key == 'queryString') {
-			return LeapORM::get_last_statement()->$key;
-		} else {
-			throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到对象名 [{$key}]。"));
-		}
-	}
-	
 	/**
-	 * 取字段名
-	 * 
+	 * 获取关联表的关联字段
+	 *
 	 * @author hliang
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string
-	 * @throws LeapException
 	 */
-	public function __call($key, $params) {
-		if (in_array($key, $this->_all_keys)) {
-			return leapJoin($this->_table, '.', $key);
-		} else {
-			throw new LeapException(LeapException::leapMsg(__METHOD__, "没有找到字段名 [{$key}]。"));
-		}
-	}
-
-	/**
-	 * 獲取ORM對象，高級操作時使用
-	 * 
-	 * @author hliang
-	 * @since 1.0.0
-	 * 
-	 * @return ORM
-	 */
-	public function obj() {
-		return $this->_object;
-	}
+// 	public function join_column_name() {
+// 		return $this->join_key;
+// 	}
 
 	/**
 	 * 向數據庫增加一條記錄
