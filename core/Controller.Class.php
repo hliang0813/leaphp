@@ -79,7 +79,6 @@ class Controller extends Base {
 				break;
 		}
 	}
-	
 
 	/**
 	 * 页面跳转，如未指定url参数，则跳转到当前页面的来源页面

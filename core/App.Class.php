@@ -106,6 +106,12 @@ class App extends Base {
 			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Request method does not allowed.'));
 		}
 		
+		// 匹配通配方法::-
+		if (strpos($disp_res->callback, '::*') !== false) {
+			$_common_method = array_shift($disp_res->params);
+			$disp_res->callback = str_replace('::*', '::' . $_common_method, $disp_res->callback);
+		}
+		
 		// 获取controller和action的名称
 		list(self::$controller, self::$action) = explode('::', $disp_res->callback);
 		$logger->trace('成功解析到controller信息。控制器 -> ' . self::$controller . '; 方法 -> ' . self::$action);
