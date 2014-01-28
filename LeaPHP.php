@@ -39,7 +39,7 @@ defined('CONTROLLER_DIR') or define('CONTROLLER_DIR', leapJoin(APP_ABS_PATH, DS,
 // 设置数据模型目录
 defined('MODEL_DIR') or define('MODEL_DIR', leapJoin(APP_ABS_PATH, DS, APP_NAME, DS, 'models'));
 // 设置业务类目录
-defined('BUSINESS_DIR') or define('BUSINESS_DIR', leapJoin(APP_ABS_PATH, DS, 'business'));
+defined('BUSINESS_DIR') or define('BUSINESS_DIR', leapJoin(APP_ABS_PATH, DS, 'businesses'));
 
 // 引入日志模块文件
 require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'log4php', DS, 'Logger.php');
