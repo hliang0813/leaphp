@@ -113,7 +113,7 @@ class App extends Base {
 		// 如果controller类不存在
 		if (!class_exists(self::$controller)) {
 			// 检查controller文件是否存在，并引入
-			$controller_file = leapJoin(CONTROLLER_DIR, DS, self::$controller, '.ctrl.php');
+			$controller_file = leapJoin(CONTROLLER_DIR, DS, self::$controller, '.Ctrl.php');
 			if (file_exists($controller_file)) {
 				require_once $controller_file;
 				$logger->trace('成功加载普通的controller类文件 -> ' . $controller_file);
