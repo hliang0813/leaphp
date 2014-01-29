@@ -8,8 +8,9 @@ leapCheckEnv();
  * 
  * @param unknown $key
  */
-function _get($key) {
-	return filter_input(INPUT_GET, $key);
+function _get($key, $default = NULL) {
+	$_get = filter_input(INPUT_GET, $key);
+	return $_get == NULL ? $default : $_get;
 }
 
 /**
@@ -20,8 +21,9 @@ function _get($key) {
  * 
  * @param unknown $key
  */
-function _post($key) {
-	return filter_input(INPUT_POST, $key);
+function _post($key, $default = NULL) {
+	$_post = filter_input(INPUT_POST, $key);
+	return $_post == NULL ? $default : $_post;
 }
 
 /**
@@ -32,8 +34,9 @@ function _post($key) {
  * 
  * @param unknown $key
  */
-function _request($key) {
-	return filter_input(INPUT_REQUEST, $key);
+function _request($key, $default = NULL) {
+	$_request = filter_input(INPUT_REQUEST, $key);
+	return $_request == NULL ? $default : $_request;
 }
 
 /**
@@ -44,8 +47,9 @@ function _request($key) {
  * 
  * @param unknown $key
  */
-function _cookie($key) {
-	return filter_input(INPUT_COOKIE, $key);
+function _cookie($key, $default = NULL) {
+	$_cookie = filter_input(INPUT_COOKIE, $key);
+	return $_cookie == NULL ? $default : $_cookie;
 }
 
 /**
@@ -56,8 +60,9 @@ function _cookie($key) {
  * 
  * @param unknown $key
  */
-function _session($key) {
-	return filter_input(INPUT_SESSION, $key);
+function _session($key, $default = NULL) {
+	$_session = filter_input(INPUT_SESSION, $key);
+	return $_session == NULL ? $default : $_session;
 }
 
 /**
@@ -68,8 +73,9 @@ function _session($key) {
  * 
  * @param unknown $key
  */
-function _server($key) {
-	return filter_input(INPUT_SERVER, $key);
+function _server($key, $default = NULL) {
+	$_server = filter_input(INPUT_SERVER, $key);
+	return $_server == NULL ? $default : $_server;
 }
 
 /**
