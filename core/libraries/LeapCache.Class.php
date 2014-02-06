@@ -141,8 +141,28 @@ class CacheAPC implements CacheInterface {
 }
 
 
+class CacheNone implements CacheInterface {
+	static public function setPrefix($prefix = '') {
+		return true;
+	}
+	
+	static public function set($key = '', $value = '', $ttl = 0) {
+		return false;
+	}
+	
+	static public function get($key = '') {
+		return false;
+	}
+	
+	static public function delete($key = '') {
+		return true;
+	}
+}
+
+
 if (function_exists('apc_add')) {
 	class LeapCache extends CacheAPC {}
 } else {
-	throw new LeapException(LeapException::leapMsg(__METHOD__, 'APC module not found.'));
+// 	throw new LeapException(LeapException::leapMsg(__METHOD__, 'APC module not found.'));
+	class LeapCache extends CacheNone {}
 }
