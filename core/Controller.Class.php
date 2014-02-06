@@ -57,7 +57,8 @@ class Controller extends Base {
 		$logger = LeapLogger::getLogger('lpf_mainloop::' . __METHOD__);
 		$logger->trace('请求controller的扩展方法 -> ' . $method . '; 参数 -> ' . var_export($params, true));
 		
-		switch (explode('_', $method, 2)[0]) {
+		$_switcher = explode('_', $method, 2);
+		switch ($_switcher[0]) {
 			case 'tpl':
 				// 根据前缀来判断调用何种方法
 				$tpl_method = substr($method, 4);

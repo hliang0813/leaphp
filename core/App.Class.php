@@ -36,7 +36,8 @@ class App extends Base {
 		$logger->trace(leapJoin('常量ENTRY_URI -> ', ENTRY_URI));
 		
 		// 应用的入口文件名
-		define('ENTRY_FILE', pathinfo(ENTRY_URI)['basename']);
+		$pathinfo = pathinfo(ENTRY_URI);
+		define('ENTRY_FILE', $pathinfo['basename']);
 		$logger->trace(leapJoin('常量ENTRY_FILE -> ', ENTRY_FILE));
 		
 		// 应用的访问URI目录

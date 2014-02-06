@@ -48,8 +48,9 @@ class LeapDB extends PDO {
 	static public function configure($cfg_mode = 'master', $config = 'database') {
 		$logger = LeapLogger::getLogger('lpf_libraries::' . __METHOD__);
 		// 加载配置文件
-		$_driver = LeapConfigure::get($config)['driver'];
-		$_configure = LeapConfigure::get($config)[$cfg_mode];
+		$_config = LeapConfigure::get($config);
+		$_driver = $_config['driver'];
+		$_configure = $_config[$cfg_mode];
 		// 生成DSN字符串
 		$_dsn = sprintf('%s:host=%s;port=%d;dbname=%s;charset=%s',
 				$_driver,

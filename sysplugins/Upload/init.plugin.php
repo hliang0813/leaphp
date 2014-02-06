@@ -101,10 +101,11 @@ class Upload {
 			$_dst_filename = trim($rename) == '' ? uniqid() : $rename;
 			$_dst_full = leapJoin($_dst_dir, DS, $_dst_filename, '.', $this->_upfile_info->extension);
 			if (move_uploaded_file($this->_upfile_info->tmp_name, $_dst_full)) {
-								
+				
+				$_pathinfo = pathinfo($_dst_full);
 				$_uploaded = array(
 					'realpath' => realpath($_dst_full),
-					'url' => leapJoin($this->configure[$this->key_visit_path], '/', $sub_folder, '/', pathinfo($_dst_full)['basename']),
+					'url' => leapJoin($this->configure[$this->key_visit_path], '/', $sub_folder, '/', $_pathinfo['basename']),
 					'size' => ceil($this->_upfile_info->size / $this->_convert),
 				);
 				return Base::response((object)$_uploaded);

@@ -1,6 +1,6 @@
 <?php
 // 限制PHP版本号
-if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50400) {
+if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50300) {
 	die('LeaPHP requires PHP 5.4.0 or higher');
 }
 // 框架版本号
