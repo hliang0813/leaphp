@@ -26,7 +26,7 @@ class Page {
 		$this->_record_limit = abs(intval($limit));
 		$this->_record_seek = ($pid - 1) * $this->_record_limit;
 		
-		$_total_record = $this->getCounter()->result;
+		$_total_record = $this->getCounter()->body;
 		
 		$this->_current_page = $pid;
 		$this->_total_page = ceil($_total_record/$this->_record_limit);
@@ -40,9 +40,9 @@ class Page {
 				'page_record' => abs(intval($limit)),
 				'page_list' => $this->getPageList(),
 			),
-			'data' => $this->getDataList($this->_current_page)->result,
+			'data' => $this->getDataList($this->_current_page)->body,
 		);
-		return Base::response((object)$return);
+		return (object)$return;
 	}
 	
 	private function getDataList($pid) {
@@ -74,10 +74,12 @@ class Page {
 	
 		if ($_pagelist_ary[0] > 1) {
 			array_unshift($_pagelist_ary, '...');
+			array_unshift($_pagelist_ary, '1');
 		}
 	
 		if ($_pagelist_ary[count($_pagelist_ary) - 1] < $this->_total_page) {
 			array_push($_pagelist_ary, '...');
+			array_push($_pagelist_ary, $this->_total_page);
 		}
 	
 		return $_pagelist_ary;

@@ -41,7 +41,7 @@ class Base {
 	static public function response($result, $error = NULL) {
 		return (object)array(
 				'error' => $error,
-				'result' => $result,
+				'body' => $result,
 		);
 	}
 }
