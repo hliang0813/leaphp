@@ -13,7 +13,7 @@ class LeapTemplate extends Smarty {
 	
 	public function display($template=null, $cache_id=null, $compile_id=null, $parent=null) {
 		if (!$template) {
-			$template = leapJoin(App::getController()->result, DS, App::getAction()->result, '.html');
+			$template = leapJoin(App::getController()->body, DS, App::getAction()->body, '.html');
 		}
 		
 		parent::display($template, $cache_id, $compile_id, $parent);
