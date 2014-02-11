@@ -71,7 +71,7 @@ class Upload {
 			throw new LeapException(LeapException::leapMsg(__METHOD__, "未找到指定的文件域名称 [{$field_name}]。"));
 		}
 		
-		$this->_limit = $this->_finalLimit()->result;
+		$this->_limit = $this->_finalLimit()->body;
 		$this->_upfile_info = (object)array_merge($this->_field, pathinfo($this->_field['name']));
 		
 		// 处理上传错误
