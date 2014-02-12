@@ -123,12 +123,14 @@ class Upload {
 			'maxsize' => 0,
 		);
 		
-		$_limit = array_merge($default, $this->_limit);
+		$_limit = array();
 		
-		$_extension = str_replace(' ', '', $_limit['extension']);
-		
+		$_limit_extension = $this->configure['limit_extension'] ? $this->configure['limit_extension'] : '';
+		$_extension = str_replace(' ', '', $_limit_extension);
 		$_limit['extension'] = strlen($_extension) == 0 ? array() : explode(',', strtolower($_extension));
-		$_limit['maxsize'] = intval($_limit['maxsize']);
+		
+		$_limit_maxsize = $this->configure['limit_maxsize'] ? $this->configure['limit_maxsize'] : 0;
+		$_limit['maxsize'] = intval($_limit_maxsize);
 		
 		return Base::response((object)$_limit);
 	}
