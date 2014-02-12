@@ -11,6 +11,7 @@
 class Model {
 	protected $id = 'id';
 	protected $keys = array();
+	protected $indexs = array();
 	protected $join_key = '';
 	
 	private $_table = NULL;
@@ -217,8 +218,15 @@ class Model {
 		$_sql .= implode(',', $_statuement);
 		$_sql .= ');';
 		
+		if ($this->indexs) {
+			foreach ((array)$this->indexs as $index) {
+				$_sql .= "ALTER TABLE `{$this->_table}` ADD INDEX(`{$index}`);";
+			}
+		}
+		
 		// 执行SQL并返回结果
-		return LeapORM::get_db()->exec($_sql);
+		$_result = LeapORM::get_db()->exec($_sql);
+		return $_result;
 	}
 	
 	/**
