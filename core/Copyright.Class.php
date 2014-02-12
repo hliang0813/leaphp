@@ -45,7 +45,7 @@ class Copyright extends Base {
 	 * @return string
 	 */
 	static function powerby() {
-		$copyright .= "Powered by LeaPHP 2011-" . date('Y') . "@Neusoft-DMED <br />Email:<a href='mailto:huang.liang@neusoft.com' target='_blank'>huang.liang#Neusoft.com</a>";
+		$copyright .= "Powered by <a href=\"http://hliang0813.github.io/leaphp/\" target=\"_blank\">LeaPHP Framework</a>";
 		return $copyright;
 	}
 
