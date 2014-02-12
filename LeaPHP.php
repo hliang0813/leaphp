@@ -5,7 +5,7 @@ if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50300) {
 }
 // 框架版本号
 define('LEAPHP_VERSION_ID', '1.0.0');
-define('LEAPHP_VERSION_RELEASE', 'alpha');
+define('LEAPHP_VERSION_RELEASE', 'Stable');
 
 // 指定必要的HEADER内容
 header("Content-type: text/html; charset=utf-8");
