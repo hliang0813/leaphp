@@ -40,6 +40,16 @@ function _request($key, $default = NULL) {
 }
 
 /**
+ * 获取http请求中的请求body
+ * 
+ * @author hliang
+ * @since 1.0.0
+ */
+function _reqbody() {
+	return file_get_contents('php://input');
+}
+
+/**
  * 封裝的$_COOKIE超全局變量
  * 
  * @author hliang
