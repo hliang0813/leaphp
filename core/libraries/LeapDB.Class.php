@@ -64,6 +64,7 @@ class LeapDB extends PDO {
 			'connection_string' => $_dsn,
 			'username' => $_configure['username'],
 			'password' => $_configure['password'],
+			'charset' => $_configure['charset'],
 		);
 		$logger->trace('数据库配置项内容 -> ' . var_export($connection, true));
 
@@ -156,7 +157,7 @@ class LeapDB extends PDO {
 		
 		// 如果没有PDOStatuement对象，抛出异常
 		if (!$this->sth) {
-			throw new Exception('PDOStatuement object not found.');
+			throw new LeapException('PDOStatuement object not found.');
 		}
 		
 		// 绑定变量

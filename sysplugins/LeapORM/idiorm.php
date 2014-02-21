@@ -255,6 +255,9 @@
                     self::$_config[$connection_name]['password'],
                     self::$_config[$connection_name]['driver_options']
                 );
+				
+				$_charset = self::get_config('charset');
+				$db->query("set names {$_charset}");
 
                 $db->setAttribute(PDO::ATTR_ERRMODE, self::$_config[$connection_name]['error_mode']);
                 self::set_db($db, $connection_name);

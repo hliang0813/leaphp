@@ -119,9 +119,11 @@ class App extends Base {
 				
 		// 如果controller类不存在
 		if (!class_exists(self::$controller)) {
+			$logger->trace('控制器类 ' . self::$controller . ' 不存在，自动加载。');
 			// 检查controller文件是否存在，并引入
 			$controller_file = leapJoin(CONTROLLER_DIR, DS, self::$controller, '.Ctrl.php');
 			if (file_exists($controller_file)) {
+				$logger->trace('检测到controller文件存在。');
 				require_once $controller_file;
 				$logger->trace('成功加载普通的controller类文件 -> ' . $controller_file);
 			} else {
@@ -131,6 +133,7 @@ class App extends Base {
 			// 实例化controller
 			$app = new self::$controller;
 		} else {
+			$logger->trace('控制器类 ' . self::$controller . ' 存在，加载。');
 			$app = self::$controller;
 			$logger->trace('成功加载内置的controller类 -> ' . self::$controller);
 		}
