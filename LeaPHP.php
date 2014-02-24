@@ -56,43 +56,48 @@ if (file_exists(CONFIGURE)) {
 }
 
 function leapError($errno, $errstr, $errfile, $errline, $errcontext) {
-// 	echo $errno, '<br />';
-// 	echo $errstr, '<br />';
-// 	echo $errfile, '<br />';
-// 	echo $$errline, '<br />';
-// 	echo $$errcontext, '<br />';
-// 	echo '--------------------<br />';
-
 	switch ($errno) {
-		case E_ALL:
-			echo 'E_ALL';
+		case E_WARNING:
+		case E_CORE_WARNING:
+		case E_COMPILE_WARNING:
+		case E_USER_WARNING:
+		case E_USER_NOTICE:
 			return true;
 			break;
-		case E_ERROR:
-			echo 'E_ERROR';
-			return true;
-			break;
-		case E_PARSE:
-			echo 'E_PARSE';
-			return true;
-			break;
-		case E_STRICT:
-			echo 'E_STRICT';
-			return true;
-			break;
-		case E_CORE_ERROR:
-			echo 'E_CORE_ERROR';
-			return true;
-			break;
-		case E_COMPILE_ERROR:
-			echo 'E_COMPILE_ERROR';
-			return true;
-			break;
-		case E_USER_ERROR:
-			echo 'E_USER_ERROR';
-			return true;
+		default:
+			die('asdfasdf');
 			break;
 	}
+// 	switch ($errno) {
+// 		case E_ALL:
+// 			echo 'E_ALL';
+// 			return true;
+// 			break;
+// 		case E_ERROR:
+// 			echo 'E_ERROR';
+// 			return true;
+// 			break;
+// 		case E_PARSE:
+// 			echo 'E_PARSE';
+// 			return true;
+// 			break;
+// 		case E_STRICT:
+// 			echo 'E_STRICT';
+// 			return true;
+// 			break;
+// 		case E_CORE_ERROR:
+// 			echo 'E_CORE_ERROR';
+// 			return true;
+// 			break;
+// 		case E_COMPILE_ERROR:
+// 			echo 'E_COMPILE_ERROR';
+// 			return true;
+// 			break;
+// 		case E_USER_ERROR:
+// 			echo 'E_USER_ERROR';
+// 			return true;
+// 			break;
+// 	}
 	
 }
 
@@ -101,14 +106,13 @@ function leapError($errno, $errstr, $errfile, $errline, $errcontext) {
 
 $logger = LeapLogger::getLogger('lpf_mainloop');
 $logger->trace('成功加载主框架文件。');
-// $logger->info('dddddddddddddddddddd');
 
 // LeaPHP 统一捕获异常
 function leapException($e) {
-	$error = sprintf('[ERROR #%d] %s', $e->getCode(), $e->getMessage());
+	$error = sprintf('[Exception ID #%d] %s<br />', $e->getCode(), $e->getMessage());
 	echo $error;
 	if (DEBUG) {
-		echo leapJoin('<div style="font-size:13px;"><pre>', $e->getTraceAsString(), '</div>');
+		echo leapJoin('<div style="font-size:13px;"><pre>', $e->getTraceAsString(), '</pre></div>');
 	}
 	exit();
 }

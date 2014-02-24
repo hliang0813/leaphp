@@ -38,7 +38,7 @@ class LeapConfigure {
 		if (!$key) {
 			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Configure key cannot be empty.'));
 		}
-		if (key_exists($key, self::$configure)) {
+		if (key_exists($key, (array)self::$configure)) {
 			return self::$configure[$key];
 		} else {
 			return false;
