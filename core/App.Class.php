@@ -1,4 +1,5 @@
 <?php
+use Assetic\Exception\Exception;
 leapCheckEnv();
 /**
  * 应用程序入口类，应用程序的总入口
@@ -29,29 +30,18 @@ class App extends Base {
 	 * 
 	 */
 	static private function initialize() {
-		$logger = LeapLogger::getLogger('lpf_mainloop::' . __METHOD__);
-		$logger->trace('开始进行应用常量初始化。');
 		// 应用的访问URI
 		define('ENTRY_URI', _server('SCRIPT_NAME'));
-		$logger->trace(leapJoin('常量ENTRY_URI -> ', ENTRY_URI));
-		
 		// 应用的入口文件名
 		$pathinfo = pathinfo(ENTRY_URI);
 		define('ENTRY_FILE', $pathinfo['basename']);
-		$logger->trace(leapJoin('常量ENTRY_FILE -> ', ENTRY_FILE));
-		
 		// 应用的访问URI目录
 		define('PATH', dirname(ENTRY_URI));
-		$logger->trace(leapJoin('常量PATH -> ', PATH));
-		$logger->trace('成功进行应用常量初始化。');
 	}
 	
 	static private function buildinDispatch() {
-		$logger = LeapLogger::getLogger('lpf_mainloop::' . __METHOD__);
-		$logger->trace('开始设置框架内部dispatcher。');
 		// 打包javascript资源
 		Dispatch::append('GET', '/buildin/resource.js', 'ResourcePack::webInterface');
-		$logger->trace('成功设置框架内部dispatcher。');
 	}
 
 	/**
@@ -63,51 +53,46 @@ class App extends Base {
 	 * @throws LeapException
 	 */
 	static public function run() {
-		$logger = LeapLogger::getLogger('lpf_mainloop::' . __METHOD__);
-		$logger->trace('成功进入App::run()方法，并执行主循环。');
-		
 		// 初始化应用常量
 		self::initialize();
 		
 		// 初始化并设置dispatcher的缓存前缀及key
 		LeapCache::setPrefix('LEAPDISPATCH');
 		$dispatch_cache_key = leapJoin(APP_ABS_PATH, '_', _server('PATH_INFO'));
-		$logger->trace('返回App::run()并生成dispatcher的缓存key -> ' . $dispatch_cache_key);
 		
 		// 尝试从缓存中读取dispatch信息
 		$disp_res = LeapCache::get($dispatch_cache_key);
-		
 		if (!$disp_res) {
-			// 加載框架內部dispatch
+			// 加载框架内部dispatch
 			self::buildinDispatch();
-
-			$logger->trace('缓存中不存在当前请求的pathinfo -> ' . _server('PATH_INFO'));
 			// 如果缓存读取失败，从dispatch文件中获取，并写入缓存
 			$disp_res = Dispatch::route();
-			$logger->trace('从dispatch规则中加载匹配当前pathinfo的匹配信息 -> ' . var_export($disp_res, true));
-			
-			$cache_result = LeapCache::set($dispatch_cache_key, json_encode($disp_res), self::$dispatch_cache_ttl);
-			$logger->trace('成功将dispatch匹配规则写入缓存。');
+			if ($disp_res->error !== NULL) {
+				throw new LeapException('解析Dispatch信息失败：' . $disp_res->body, -99999);
+			}
+			$cache_result = LeapCache::set($dispatch_cache_key, json_encode($disp_res->body), self::$dispatch_cache_ttl);
+			$disp_res = $disp_res->body;
 		} else {
-			$logger->trace('缓存中存在当前请求的pathinfo。');
 			// 读取成功，将缓存中数据转换成可以使用的object
-			$disp_res = json_decode($disp_res);
-			$logger->trace('从缓存中加载匹配当前pathinfo的规则 -> ' . var_export($disp_res, true));
+			$disp_res = JSON::decode($disp_res);
+			if ($disp_res->error !== NULL) {
+				throw new LeapException('LPF', '读取缓存中的Dispatch信息失败：' . $disp_res->body, -99999);
+			}
+			$disp_res = $disp_res->body;
 		}
 		
 		// 如果路由的pathinfo不存在，即访问一个不合法的地址
 		if ($disp_res->pathinfo === NULL) {
-			$logger->trace('请求的pathinfo不存在，返回404响应码。');
-			$logger->trace('应用中断执行。 ');
+			throw new LeapException('LPF', '请求的路径 [' . _server('PATH_INFO') . '] 不存在', -99999);
 			LeapFunction('sendheader', 404);
 		}
 		
 		// 检查请求方式是否正确
 		if (!in_array(_server('REQUEST_METHOD'), $disp_res->methods)) {
-			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Request method does not allowed.'));
+			throw new LeapException('LPF', '不允许向路径 [' . _server('PATH_INFO') . '] 发起 ' . _server('REQUEST_METHOD') . ' 方式的请求', -99999);
 		}
 		
-		// 匹配通配方法::-
+		// 匹配通配方法::*
 		if (strpos($disp_res->callback, '::*') !== false) {
 			$_common_method = array_shift($disp_res->params);
 			$disp_res->callback = str_replace('::*', '::' . $_common_method, $disp_res->callback);
@@ -115,40 +100,34 @@ class App extends Base {
 		
 		// 获取controller和action的名称
 		list(self::$controller, self::$action) = explode('::', $disp_res->callback);
-		$logger->trace('成功解析到controller信息。控制器 -> ' . self::$controller . '; 方法 -> ' . self::$action);
-				
+		if (trim(self::$controller) == '') {
+			throw new LeapException('LPF', '未找到对应的Controller [' . self::$controller . ']', -99999);
+		}
+		if (trim(self::$action) == '') {
+			throw new LeapException('LPF', '未找到对应的Action [' . self::$action . ']', -99999);
+		}
+		
 		// 如果controller类不存在
 		if (!class_exists(self::$controller)) {
-			$logger->trace('控制器类 ' . self::$controller . ' 不存在，自动加载。');
 			// 检查controller文件是否存在，并引入
 			$controller_file = leapJoin(CONTROLLER_DIR, DS, self::$controller, '.Ctrl.php');
 			if (file_exists($controller_file)) {
-				$logger->trace('检测到controller文件存在。');
 				require_once $controller_file;
-				$logger->trace('成功加载普通的controller类文件 -> ' . $controller_file);
 			} else {
-				throw new LeapException(LeapException::leapMsg(__METHOD__, 'Unsigned controller.'));
+				throw new LeapException('LPF', '未找到Controller对应的文件 [' . $controller_file . ']', -99999);
 			}
-			
 			// 实例化controller
 			$app = new self::$controller;
 		} else {
-			$logger->trace('控制器类 ' . self::$controller . ' 存在，加载。');
 			$app = self::$controller;
-			$logger->trace('成功加载内置的controller类 -> ' . self::$controller);
 		}
 					
 		// 检查controller中是否有action方法，并调用
 		if (method_exists($app, self::$action)) {
 			call_user_func_array(array($app, self::$action), $disp_res->params);
-			$logger->trace('成功调用controller中对应的方法 -> ' . self::$action);
 		} else {
-			throw new LeapException(LeapException::leapMsg(__METHOD__, 'Unsigned action.'));
+			throw new LeapException('LPF', 'Controller中未注册的方法 [' . self::$action . ']', -99999);
 		}
-		
-		$logger->trace('成功执行完毕App::run()主循环方法。');
-		
-		
 	}
 	
 	static public function getController() {

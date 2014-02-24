@@ -46,10 +46,12 @@ class LeapLogger extends Logger {
 					),
 				),
 			);
-			
 			if ($configuration) {
 				$configuration = LeapFunction('array_merge', $default_config, $configuration);
+			} else {
+				$configuration = $default_config;
 			}
+			
 			parent::configure($configuration, $configurator);
 			self::$is_load_config = true;
 		}

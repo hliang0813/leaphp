@@ -109,12 +109,12 @@ $logger->trace('成功加载主框架文件。');
 
 // LeaPHP 统一捕获异常
 function leapException($e) {
-	$error = sprintf('[Exception ID #%d] %s<br />', $e->getCode(), $e->getMessage());
-	echo $error;
+	$error_string = JSON::encode(JSON::decode($e->getMessage()));
+	$logger = LeapLogger::getLogger('Framework');
+	$logger->fatal($error_string);
 	if (DEBUG) {
-		echo leapJoin('<div style="font-size:13px;"><pre>', $e->getTraceAsString(), '</pre></div>');
+		echo $error_string;
 	}
-	exit();
 }
 
 $logger->trace('开始引入主框架必要文件。');

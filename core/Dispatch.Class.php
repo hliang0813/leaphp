@@ -22,7 +22,6 @@ class Dispatch extends Base {
 	 */
 	static public function route() {
 		$logger = LeapLogger::getLogger('lpf_mainloop::' . __METHOD__);
-		$logger->trace('开始进行dispatch规则匹配。');
 		
 		self::loadDispRouter();
 		
@@ -31,7 +30,6 @@ class Dispatch extends Base {
 			list($methods, $path, $callback) = $router;
 			preg_match($path, _server('PATH_INFO'), self::$params);
 			if (self::$params) {
-				$logger->trace('成功匹配到合适的dispatch规则 -> ' . $path);
 				// 读取到匹配的第一条记录，跳出
 				break;
 			}
@@ -47,10 +45,8 @@ class Dispatch extends Base {
 			'callback' => $callback,
 			'params' => self::$params,
 		);
-		
-		$logger->trace('成功进行dispatch规则匹配 -> ' . $callback);
-		
-		return (object)$route_info;
+						
+		return Base::response((object)$route_info, NULL);
 	}
 	
 	/**
@@ -75,9 +71,6 @@ class Dispatch extends Base {
 	 * @param string $callback
 	 */
 	static public function append($method, $path, $callback) {
-		$logger = LeapLogger::getLogger('lpf_mainloop::' . __METHOD__);
-		$logger->trace(leapJoin('请求方法 -> ', json_encode($method), '; 路径规则 -> ', $path, '; 回调方法 -> ', $callback));
-		
 		array_push(self::$routers, array(
 			(array)$method, '`^' . $path . '$`', $callback,
 		));
@@ -93,6 +86,8 @@ class Dispatch extends Base {
 	static private function loadDispRouter() {
 		if (file_exists(DISPATCH)) {
 			require_once DISPATCH;
+		} else {
+			throw new LeapException('Framework', '没有找到Dispatch文件 [' . DISPATCH . '] ，请检查路径', -99999);
 		}
 	}
 }

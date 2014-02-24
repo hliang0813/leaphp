@@ -10,6 +10,18 @@ leapCheckEnv();
  *
  */
 class LeapException extends Exception {
+	public function __construct($module = '', $message = '', $code = 0, $previous = NULL) {
+		$exception_message = self::leapMsg($module, $message);
+		
+		$_msg = array(
+			'Code' => $code,
+			'Module' => $module,
+			'Message' => $message,
+		);
+		
+		parent::__construct(JSON::encode($_msg), $code, $previous);
+	}
+	
 	/**
 	 * 生成显示给开发者及用户的异常信息
 	 * 
@@ -21,14 +33,12 @@ class LeapException extends Exception {
 	 * @return string
 	 */
 	static public function leapMsg($module = NULL, $message = NULL) {
-		$logger = LeapLogger::getLogger($module);
-		$logger->fatal(leapJoin('throw_LeapException:', $message));
-		
-		if (DEBUG) {
-			$message = leapJoin('BLOCK: ', $module, '; MESSAGE: ', $message);
-		} else {
-			$message = leapJoin('MESSAGE: ', $message);
+		$message = array(
+			'Message' => $message,
+		);
+		if (DEBUT) {
+			$message['Module'] = $module;
 		}
-		return $message;
+		return Base::response($message);
 	}
 }
