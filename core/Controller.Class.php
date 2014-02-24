@@ -54,9 +54,6 @@ class Controller extends Base {
 	 * @throws LeapException
 	 */
 	private function _callMethod($method, $params) {
-		$logger = LeapLogger::getLogger('lpf_mainloop::' . __METHOD__);
-		$logger->trace('请求controller的扩展方法 -> ' . $method . '; 参数 -> ' . var_export($params, true));
-		
 		$_switcher = explode('_', $method, 2);
 		switch ($_switcher[0]) {
 			case 'tpl':
@@ -72,11 +69,11 @@ class Controller extends Base {
 					// 动态调用方法
 					call_user_func_array(array(self::$template, $tpl_method), $params);
 				} else {
-					throw new LeapException(LeapException::leapMsg(__METHOD__, 'Template method not found.'));
+					throw new LeapException('LPF', '没有找到模板类方法 [' . $tpl_method . ']', -99999);
 				}
 				break;
 			default:
-				throw new LeapException(LeapException::leapMsg(__METHOD__, 'Extension method not found.'));
+				throw new LeapException('LPF', '没有找到Controller的扩展模块 [' . $_switcher[0] . ']', -99999);
 				break;
 		}
 	}
@@ -91,8 +88,6 @@ class Controller extends Base {
 	 */
 	public function redirect($url = '') {
 		$url = $url == '' ? filter_input(INPUT_SERVER, 'HTTP_REFERER') : $url;
-		$logger = LeapLogger::getLogger(__METHOD__);
-		$logger->trace(leapJoin('redirect_to:', $url));
 		header(leapJoin('Location: ', $url));
 		exit;
 	}
