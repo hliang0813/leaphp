@@ -161,7 +161,7 @@ function leapJoin() {
 // 检测框架插件及类库是否在框架外部使用
 function leapCheckEnv() {
 	if (!defined('LEAPHP_VERSION_ID')) {
-		throw new Exception('不能在框架外部使用LeaPHP的类库或插件。');
+		throw new LeapException('不能在框架外部使用LeaPHP的类库或插件。');
 	}
 }
 
