@@ -17,6 +17,8 @@ class LeapException extends Exception {
 			'Code' => $code,
 			'Module' => $module,
 			'Message' => $message,
+			'File' => $this->file,
+			'Line' => $this->line,
 		);
 		
 		parent::__construct(JSON::encode($_msg), $code, $previous);

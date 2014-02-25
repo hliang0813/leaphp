@@ -68,56 +68,21 @@ function leapError($errno, $errstr, $errfile, $errline, $errcontext) {
 			die('asdfasdf');
 			break;
 	}
-// 	switch ($errno) {
-// 		case E_ALL:
-// 			echo 'E_ALL';
-// 			return true;
-// 			break;
-// 		case E_ERROR:
-// 			echo 'E_ERROR';
-// 			return true;
-// 			break;
-// 		case E_PARSE:
-// 			echo 'E_PARSE';
-// 			return true;
-// 			break;
-// 		case E_STRICT:
-// 			echo 'E_STRICT';
-// 			return true;
-// 			break;
-// 		case E_CORE_ERROR:
-// 			echo 'E_CORE_ERROR';
-// 			return true;
-// 			break;
-// 		case E_COMPILE_ERROR:
-// 			echo 'E_COMPILE_ERROR';
-// 			return true;
-// 			break;
-// 		case E_USER_ERROR:
-// 			echo 'E_USER_ERROR';
-// 			return true;
-// 			break;
-// 	}
-	
 }
-
-
-
-
-$logger = LeapLogger::getLogger('lpf_mainloop');
-$logger->trace('成功加载主框架文件。');
 
 // LeaPHP 统一捕获异常
 function leapException($e) {
-	$error_string = JSON::encode(JSON::decode($e->getMessage()));
+	$_message = JSON::decode($e->getMessage());
+	$exception_msg = Base::response($_message->body, $_message->body->Code);
+	$exception_msg = JSON::encode($exception_msg);
+
 	$logger = LeapLogger::getLogger('Framework');
-	$logger->fatal($error_string);
+	$logger->fatal($exception_msg);
 	if (DEBUG) {
-		echo $error_string;
+		echo $exception_msg;
 	}
 }
 
-$logger->trace('开始引入主框架必要文件。');
 // 引入框架文件
 require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'LeapException.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'Plugins.Function.php');
@@ -129,7 +94,6 @@ require_once leapJoin(__DIR__, DS, 'core', DS, 'App.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'Controller.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'Dispatch.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'Model.Class.php');
-$logger->trace('成功引入主框架必要文件。');
 
 // 自动装载类库
 function leapAutoload($class_name) {
