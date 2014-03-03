@@ -73,22 +73,22 @@ function leapError($errno, $errstr, $errfile, $errline, $errcontext) {
 // LeaPHP 统一捕获异常
 function leapException($e) {
 	$_message = JSON::decode($e->getMessage());
-	$exception_msg = Base::response($_message->body, $_message->body->Code);
-	$exception_msg = JSON::encode($exception_msg);
-
-	$logger = LeapLogger::getLogger('Framework');
-	$logger->fatal($exception_msg);
+	if ($_message->error === NULL) {
+		$exception_msg = JSON::encode(Base::response($_message->body, $e->getCode()));
+	} else {
+		$exception_msg = $e->getMessage();
+	}
 	if (DEBUG) {
 		echo $exception_msg;
 	}
 }
 
 // 引入框架文件
+require_once leapJoin(__DIR__, DS, 'core', DS, 'Base.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'LeapException.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'Plugins.Function.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'Params.Function.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'libraries', DS, 'LeapCache.Class.php');
-require_once leapJoin(__DIR__, DS, 'core', DS, 'Base.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'Copyright.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'App.Class.php');
 require_once leapJoin(__DIR__, DS, 'core', DS, 'Controller.Class.php');
@@ -125,7 +125,7 @@ function leapJoin() {
 // 检测框架插件及类库是否在框架外部使用
 function leapCheckEnv() {
 	if (!defined('LEAPHP_VERSION_ID')) {
-		throw new LeapException('不能在框架外部使用LeaPHP的类库或插件。');
+		throw new LeapException(__METHOD__, '不能在框架外部使用LeaPHP的类库或插件', -99999);
 	}
 }
 
@@ -134,7 +134,7 @@ function LeapFunction() {
 	$params = func_get_args();
 	switch (func_num_args()) {
 		case 0:
-			throw new Exception('Parameter(s) error while using autoload function(s).', 824209015);
+			throw new LeapException(__METHOD__, '使用自动加载的函数，需要至少传递一个参数', -99999);
 		default:
 			$function_name = leapJoin('leap_function_', $params[0]);
 			if (!function_exists($function_name)) {
@@ -142,8 +142,10 @@ function LeapFunction() {
 				if (file_exists($function_file)) {
 					require_once $function_file;
 				} else {
-					throw new Exception('Autoload function(s) not found.', 824209016);
+					throw new LeapException(__METHOD__, '没有找到需要自动加载函数的文件 [' . $function_file . ']', -99999);
 				}
+			} else {
+				throw new LeapException(__METHOD__, '已经显示加载了指定的函数 [' . $function_name . ']', -99999);
 			}
 			unset($params[0]);
 			return call_user_func_array($function_name, $params);

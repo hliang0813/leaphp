@@ -10,10 +10,9 @@ leapCheckEnv();
  *
  */
 class LeapException extends Exception {
+	private $_msg;
 	public function __construct($module = '', $message = '', $code = 0, $previous = NULL) {
-		$exception_message = self::leapMsg($module, $message);
-		
-		$_msg = array(
+		$this->_msg = array(
 			'Code' => $code,
 			'Module' => $module,
 			'Message' => $message,
@@ -21,7 +20,10 @@ class LeapException extends Exception {
 			'Line' => $this->line,
 		);
 		
-		parent::__construct(JSON::encode($_msg), $code, $previous);
+		$logger = LeapLogger::getLogger('LeapException');
+		$logger->fatal(var_export($this->_msg, true));
+		
+		parent::__construct(JSON::encode($this->_msg), $code, $previous);
 	}
 	
 	/**
