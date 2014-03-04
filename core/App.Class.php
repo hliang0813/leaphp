@@ -36,7 +36,11 @@ class App extends Base {
 		$pathinfo = pathinfo(ENTRY_URI);
 		define('ENTRY_FILE', $pathinfo['basename']);
 		// 应用的访问URI目录
-		define('PATH', dirname(ENTRY_URI));
+		if (dirname(ENTRY_URI) == '/') {
+			define('PATH', '');
+		} else {
+			define('PATH', dirname(ENTRY_URI));
+		}
 	}
 	
 	static private function buildinDispatch() {
